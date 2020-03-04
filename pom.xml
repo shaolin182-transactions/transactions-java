@@ -29,31 +29,69 @@
   </modules>
 
   <properties>
+    <java.version>11</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.compiler.target>1.7</maven.compiler.target>
+
+    <!-- project -->
+    <project.version>1.0-SNAPSHOT</project.version>
+
+    <!-- Dependencies versions-->
+    <junit-jupiter-api.version>5.5.2</junit-jupiter-api.version>
+    <mockito-core.version>3.3.0</mockito-core.version>
+    <!-- END dependencies versions -->
+
+    <!-- Plugins versions-->
+    <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
+    <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
+    <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+    <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
+    <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
+    <maven-install-plugin.version>2.5.2</maven-install-plugin.version>
+    <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
+    <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
+    <maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
+    <!-- END Plugins versions-->
   </properties>
 
   <dependencyManagement>
     <dependencies>
+
+      <dependency>
+        <groupId>org.transactions</groupId>
+        <artifactId>model</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.transactions</groupId>
+        <artifactId>service</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.transactions</groupId>
+        <artifactId>persistence-mongodb</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
-        <version>5.6.0</version>
+        <version>${junit-jupiter-api.version}</version>
         <scope>test</scope>
       </dependency>
 
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
-        <version>3.3.0</version>
+        <version>${mockito-core.version}</version>
         <scope>test</scope>
       </dependency>
 
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-junit-jupiter</artifactId>
-        <version>3.3.0</version>
+        <version>${mockito-core.version}</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
@@ -65,41 +103,45 @@
         <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
         <plugin>
           <artifactId>maven-clean-plugin</artifactId>
-          <version>3.1.0</version>
+          <version>${maven-clean-plugin.version}</version>
         </plugin>
         <!-- default lifecycle, jar packaging: see https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
         <plugin>
           <artifactId>maven-resources-plugin</artifactId>
-          <version>3.0.2</version>
+          <version>${maven-resources-plugin.version}</version>
         </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.0</version>
+          <version>${maven-compiler-plugin.version}</version>
+          <configuration>
+            <source>${java.version}</source>
+            <target>${java.version}</target>
+          </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.22.1</version>
+          <version>${maven-surefire-plugin.version}</version>
         </plugin>
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>3.0.2</version>
+          <version>${maven-jar-plugin.version}</version>
         </plugin>
         <plugin>
           <artifactId>maven-install-plugin</artifactId>
-          <version>2.5.2</version>
+          <version>${maven-install-plugin.version}</version>
         </plugin>
         <plugin>
           <artifactId>maven-deploy-plugin</artifactId>
-          <version>2.8.2</version>
+          <version>${maven-deploy-plugin.version}</version>
         </plugin>
         <!-- site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->
         <plugin>
           <artifactId>maven-site-plugin</artifactId>
-          <version>3.7.1</version>
+          <version>${maven-site-plugin.version}</version>
         </plugin>
         <plugin>
           <artifactId>maven-project-info-reports-plugin</artifactId>
-          <version>3.0.0</version>
+          <version>${maven-project-info-reports-plugin.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
