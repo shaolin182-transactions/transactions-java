@@ -1,4 +1,4 @@
-package org.transactions.model;
+package org.model.transactions;
 
 import org.springframework.data.annotation.Id;
 

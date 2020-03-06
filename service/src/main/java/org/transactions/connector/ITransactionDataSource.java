@@ -1,6 +1,6 @@
 package org.transactions.connector;
 
-import org.transactions.model.Transaction;
+import org.model.transactions.Transaction;
 
 import java.util.List;
 import java.util.Optional;

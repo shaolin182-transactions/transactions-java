@@ -1,8 +1,8 @@
-package org.transactions.model.builder;
+package org.model.transactions.builder;
 
-import org.transactions.model.BankAccount;
-import org.transactions.model.Transaction;
-import org.transactions.model.TransactionDetails;
+import org.model.transactions.BankAccount;
+import org.model.transactions.Transaction;
+import org.model.transactions.TransactionDetails;
 
 import java.util.List;
 import java.util.function.Consumer;

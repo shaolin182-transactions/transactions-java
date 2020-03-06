@@ -3,7 +3,7 @@ package org.transactions.persistence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.transactions.connector.ITransactionDataSource;
-import org.transactions.model.Transaction;
+import org.model.transactions.Transaction;
 import org.transactions.persistence.repositories.TransactionsRepository;
 
 import java.util.List;

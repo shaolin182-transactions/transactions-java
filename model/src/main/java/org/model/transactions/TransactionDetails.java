@@ -1,6 +1,6 @@
-package org.transactions.model;
+package org.model.transactions;
 
-import org.transactions.model.builder.TransactionDetailsListBuilder;
+import org.model.transactions.builder.TransactionDetailsListBuilder;
 
 import java.util.function.Consumer;
 

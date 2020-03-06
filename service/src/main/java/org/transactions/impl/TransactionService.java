@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.transactions.ITransactionService;
 import org.transactions.connector.ITransactionDataSource;
 import org.transactions.exception.TransactionNotFoundException;
-import org.transactions.model.Transaction;
+import org.model.transactions.Transaction;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,5 +29,20 @@ public class TransactionService implements ITransactionService {
     public Transaction getTransaction(String id) {
         Optional<Transaction> result = transactionDataSource.getTransaction(id);
         return result.orElseThrow(TransactionNotFoundException::new);
+    }
+
+    @Override
+    public Transaction saveTransaction(String id, Transaction transaction) {
+        return null;
+    }
+
+    @Override
+    public Transaction createTransaction(Transaction transaction) {
+        return null;
+    }
+
+    @Override
+    public Transaction deleteTransaction(String id) {
+        return null;
     }
 }
