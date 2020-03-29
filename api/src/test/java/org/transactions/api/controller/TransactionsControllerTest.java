@@ -22,8 +22,7 @@ import org.transactions.persistence.repositories.TransactionsRepository;
 import java.util.ArrayList;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -51,7 +50,7 @@ class TransactionsControllerTest {
     @Test
     void getAll() throws Exception {
 
-        when(service.getAllTransactions()).thenReturn(new ArrayList<Transaction>());
+        when(service.getAllTransactions()).thenReturn(new ArrayList<>());
 
         mockMvc.perform(get("/transactions")
                 .contentType("application/json"))
@@ -85,7 +84,7 @@ class TransactionsControllerTest {
                         .withCategory().withId(1).withCategory("desc").withLabel("label").done()
                         .withIncome(12f).withOutcome(0f).done()
                 .done()
-                .withCost(12l)
+                .withCost(12L)
                 .withBankAccountFrom().withCategory("cat").withId(2).withLabel("label").done()
                 .build();
 
@@ -144,6 +143,41 @@ class TransactionsControllerTest {
                 .content(transaction))
                 .andExpect(status().isBadRequest())
                 .andReturn();
+    }
 
+    @DisplayName("Delete Transaction - Nominal Case")
+    @Test
+    public void deleteTransaction() throws Exception {
+
+        mockMvc.perform(delete("/transactions/someId")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+    }
+
+    @DisplayName("Update Transaction - Nominal Case")
+    @Test
+    public void updateTransaction() throws Exception {
+
+        Transaction expectedTransaction = new TransactionBuilder()
+                .addTransactions()
+                .addTransaction()
+                .withCategory().withId(1).withCategory("aCategory").withLabel("aLabel").done()
+                .withIncome(0f).withOutcome(123.5f).done()
+                .done()
+                .withBankAccountFrom().withCategory("aCategory").withId(1).withLabel("aLabel").done()
+                .withId("someId")
+                .build();
+
+        when(service.saveTransaction(Mockito.anyString(), Mockito.any())).thenReturn(expectedTransaction);
+
+        MvcResult result = mockMvc.perform(put("/transactions/someId")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(expectedTransaction)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+
+        Assertions.assertThat(objectMapper.writeValueAsString(expectedTransaction)).isEqualToIgnoringCase(response);
     }
 }
