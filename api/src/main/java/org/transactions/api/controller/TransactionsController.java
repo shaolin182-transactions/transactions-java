@@ -48,7 +48,7 @@ public class TransactionsController {
      */
     @PostMapping(value = "/transactions", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<Transaction> createTransaction(@RequestBody Transaction transaction) {
-        Transaction result = service.createTransaction(null);
+        Transaction result = service.createTransaction(transaction);
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
@@ -58,7 +58,7 @@ public class TransactionsController {
      */
     @PutMapping(value = "/transactions/{id}", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<Transaction> updateTransaction(@PathVariable String id, @RequestBody Transaction transaction) {
-        Transaction result = service.saveTransaction(id, null);
+        Transaction result = service.saveTransaction(id, transaction);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
