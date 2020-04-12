@@ -1,5 +1,6 @@
 package org.model.transactions;
 
+import javax.validation.constraints.*;
 import java.util.function.Consumer;
 
 public class TransactionCategory {
@@ -7,16 +8,25 @@ public class TransactionCategory {
     /**
      * Unique identifier of a category
      */
+    @Positive
+    @Max(value = 512)
+    @NotNull
     private Integer id;
 
     /**
      * Parent Category
      */
+    @Size(max = 64)
+    @Pattern(regexp = "^[a-zA-Z0-9/ ,'-]*$")
+    @NotNull
     private String category;
 
     /**
      * Category label
      */
+    @Size(max = 64)
+    @Pattern(regexp = "^[a-zA-Z0-9/ ,'-]*$")
+    @NotNull
     private String label;
 
     /**
@@ -55,6 +65,10 @@ public class TransactionCategory {
 
         private TransactionCategory instance;
 
+        public TransactionCategoryBuilder(){
+            this.instance = new TransactionCategory();
+        }
+
         public TransactionCategoryBuilder(TransactionDetails.TransactionDetailsBuilder parentBuilder, Consumer<TransactionCategory> callback){
             this.parentBuilder = parentBuilder;
             this.callback = callback;
@@ -84,6 +98,10 @@ public class TransactionCategory {
         public TransactionDetails.TransactionDetailsBuilder done(){
             callback.accept(instance);
             return parentBuilder;
+        }
+
+        public TransactionCategory build(){
+            return instance;
         }
     }
 }

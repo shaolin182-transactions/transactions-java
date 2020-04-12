@@ -2,6 +2,7 @@ package org.model.transactions;
 
 import org.model.transactions.builder.TransactionBuilder;
 
+import javax.validation.constraints.*;
 import java.util.function.Consumer;
 
 public class BankAccount {
@@ -9,16 +10,25 @@ public class BankAccount {
     /**
      * Unique identifier of a bank account
      */
+    @Positive
+    @Max(value = 512)
+    @NotNull
     private Integer id;
 
     /**
      * Categorize bank account
      */
+    @Size(max = 64)
+    @Pattern(regexp = "^[a-zA-Z0-9/ ,'-]*$")
+    @NotNull
     private String category;
 
     /**
      * Bank account label
      */
+    @Size(max = 64)
+    @Pattern(regexp = "^[a-zA-Z0-9/ ,'-]*$")
+    @NotNull
     private String label;
 
     /**
@@ -51,6 +61,10 @@ public class BankAccount {
 
         private BankAccount instance;
 
+        public BankAccountBuilder(){
+            this.instance = new BankAccount();
+        }
+
         public BankAccountBuilder(TransactionBuilder parentBuilder, Consumer<BankAccount> callback){
             this.parentBuilder = parentBuilder;
             this.callback = callback;
@@ -75,6 +89,10 @@ public class BankAccount {
         public TransactionBuilder done(){
             callback.accept(instance);
             return parentBuilder;
+        }
+
+        public BankAccount build(){
+            return instance;
         }
     }
 
