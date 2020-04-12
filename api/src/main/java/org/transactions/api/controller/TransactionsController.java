@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.transactions.ITransactionService;
 import org.model.transactions.Transaction;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -47,7 +48,7 @@ public class TransactionsController {
      * @return transaction updated
      */
     @PostMapping(value = "/transactions", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<Transaction> createTransaction(@RequestBody Transaction transaction) {
+    public ResponseEntity<Transaction> createTransaction(@Valid @RequestBody Transaction transaction) {
         Transaction result = service.createTransaction(transaction);
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }

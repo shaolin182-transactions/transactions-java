@@ -2,6 +2,9 @@ package org.model.transactions;
 
 import org.springframework.data.annotation.Id;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class Transaction {
@@ -12,10 +15,15 @@ public class Transaction {
     @Id
     private String id;
 
+    @Valid
+    @NotNull
     private BankAccount from;
 
+    @Valid
     private BankAccount to;
 
+    @Valid
+    @NotEmpty
     private List<TransactionDetails> transactions;
 
     /**

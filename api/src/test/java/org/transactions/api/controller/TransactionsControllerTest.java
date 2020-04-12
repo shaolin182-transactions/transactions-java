@@ -145,6 +145,26 @@ class TransactionsControllerTest {
                 .andReturn();
     }
 
+    @DisplayName("Create Transaction - Correct JSON with invalid data")
+    @Test
+    public void createTransactionWWithInvalidData() throws Exception {
+        String transaction = "{" +
+                "\"from\": {\"id\": 1, \"category\": \"aCategory\", \"label\": \"aLabel\"}," +
+                "\"transactions\": [" +
+                "{" +
+                "\"income\": 10, \"outcome\": 123.5, \"description\": \"Some description\"," +
+                "\"category\":  {\"id\": 1, \"category\": \"aCategory\", \"label\": \"aLabel\"}" +
+                "}" +
+                "]" +
+                "}";
+
+        MvcResult result = mockMvc.perform(post("/transactions")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(transaction))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+    }
+
     @DisplayName("Delete Transaction - Nominal Case")
     @Test
     public void deleteTransaction() throws Exception {
