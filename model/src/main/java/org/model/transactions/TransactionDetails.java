@@ -1,21 +1,33 @@
 package org.model.transactions;
 
+import org.model.constraint.ValidIncomeOutcome;
 import org.model.transactions.builder.TransactionDetailsListBuilder;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 import java.util.function.Consumer;
 
+@ValidIncomeOutcome
 public class TransactionDetails {
 
     /**
      * Category of the transaction
      * Use for statistics purpose
      */
+    @Valid
     private TransactionCategory category;
 
+    @PositiveOrZero
     private Float income;
 
+    @PositiveOrZero
     private Float outcome;
 
+    @Size(max = 512)
+    @Pattern(regexp = "^[a-zA-Z0-9_@./# &,'-]*$")
     private String description;
 
     private TransactionDetails() {
@@ -46,6 +58,10 @@ public class TransactionDetails {
 
         private Consumer<TransactionDetails> callback;
 
+        TransactionDetailsBuilder() {
+            this.instance = new TransactionDetails();
+        }
+
         public TransactionDetailsBuilder(TransactionDetailsListBuilder parentBuilder, Consumer<TransactionDetails> callback){
             this.parentBuilder = parentBuilder;
             this.callback = callback;
@@ -75,6 +91,10 @@ public class TransactionDetails {
         public TransactionDetailsListBuilder done(){
             callback.accept(instance);
             return parentBuilder;
+        }
+
+        TransactionDetails build() {
+            return instance;
         }
     }
 }

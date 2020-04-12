@@ -38,6 +38,8 @@
     <!-- Dependencies versions-->
     <junit-jupiter-api.version>5.5.2</junit-jupiter-api.version>
     <mockito-core.version>3.3.0</mockito-core.version>
+    <org.glassfish.jakarta.el.version>3.0.3</org.glassfish.jakarta.el.version>
+    <org.apache.commons.commons-lang3.version>3.10</org.apache.commons.commons-lang3.version>
     <!-- END dependencies versions -->
 
     <!-- Plugins versions-->
@@ -72,6 +74,18 @@
         <groupId>org.transactions</groupId>
         <artifactId>persistence-mongodb</artifactId>
         <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.glassfish</groupId>
+        <artifactId>jakarta.el</artifactId>
+        <version>${org.glassfish.jakarta.el.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>${org.apache.commons.commons-lang3.version}</version>
       </dependency>
 
       <dependency>
