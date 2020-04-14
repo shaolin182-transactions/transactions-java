@@ -1,8 +1,9 @@
 package org.model.transactions;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -10,6 +11,7 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static org.apache.commons.lang3.RandomStringUtils.random;
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,55 +26,30 @@ class BankAccountTest {
         validator = factory.getValidator();
     }
 
-    @Test
-    public void validNominalCase() {
+    @ParameterizedTest(name="Validation test on bank account - run #{index} with [{arguments}]")
+    @MethodSource("getBankAccountDataSet")
+    public void validBankAccount(String category, Integer id, String label, Integer expectedError) {
         BankAccount bankAccount = new BankAccount.BankAccountBuilder()
-                .withCategory("A bank Account Category")
-                .withId(1)
-                .withLabel("A bank Account Label")
+                .withLabel(label)
+                .withId(id)
+                .withCategory(category)
                 .build();
 
         Set<ConstraintViolation<BankAccount>> constraintViolations = validator.validate(bankAccount);
 
-        assertEquals(0, constraintViolations.size(), "A validation error occurs");
+        assertEquals(expectedError, constraintViolations.size(), "Error when validating BankAccount object");
     }
 
-    @Test
-    public void validErrorOnId() {
-        BankAccount bankAccount = new BankAccount.BankAccountBuilder()
-                .withCategory(random(50, true, true))
-                .withId(1000)
-                .withLabel(random(50, true, true))
-                .build();
-
-        Set<ConstraintViolation<BankAccount>> constraintViolations = validator.validate(bankAccount);
-
-        assertEquals(1, constraintViolations.size(), "Error on validate object");
-    }
-
-    @Test
-    public void validErrorOnCategory() {
-        BankAccount bankAccount = new BankAccount.BankAccountBuilder()
-                .withLabel(random(50, true, true))
-                .withId(100)
-                .withCategory(random(100, true, true))
-                .build();
-
-        Set<ConstraintViolation<BankAccount>> constraintViolations = validator.validate(bankAccount);
-
-        assertEquals(1, constraintViolations.size(), "Error on validate object");
-    }
-
-    @Test
-    public void validErrorOnLabel() {
-        BankAccount bankAccount = new BankAccount.BankAccountBuilder()
-                .withLabel(random(100, true, true))
-                .withId(100)
-                .withCategory(random(50, true, true))
-                .build();
-
-        Set<ConstraintViolation<BankAccount>> constraintViolations = validator.validate(bankAccount);
-
-        assertEquals(1, constraintViolations.size(), "Error on validate object");
+    /**
+     * Build data for validation unit tests
+     * @return a stream of test data set
+     */
+    private static Stream<Arguments> getBankAccountDataSet() {
+        return Stream.of(
+          Arguments.of("A bank Account Category", 1, "A bank Account Label", 0),
+          Arguments.of("A bank Account Category", 1000, "A bank Account Label", 1),
+          Arguments.of(random(100, true, true), 100, "A bank Account Label", 1),
+          Arguments.of("A bank Account Category", 100, random(100, true, true), 1)
+        );
     }
 }
