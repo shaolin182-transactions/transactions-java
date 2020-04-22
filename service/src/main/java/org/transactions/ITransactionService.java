@@ -18,6 +18,6 @@ public interface ITransactionService {
 
     Transaction createTransaction(Transaction transaction);
 
-    Transaction deleteTransaction(String id);
+    void deleteTransaction(String id);
 
 }
