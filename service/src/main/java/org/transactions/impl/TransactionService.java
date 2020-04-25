@@ -33,16 +33,22 @@ public class TransactionService implements ITransactionService {
 
     @Override
     public Transaction saveTransaction(String id, Transaction transaction) {
-        return null;
+
+        return createTransaction(transaction);
     }
 
     @Override
     public Transaction createTransaction(Transaction transaction) {
-        return null;
+        // Compute total cost in cent
+        Float cost = transaction.getTransactions().stream().map(item -> item.getIncome() - item.getOutcome()).reduce(0f, Float::sum);
+        transaction.setCost((long) (cost * 100));
+
+        // Persist in database
+        return transactionDataSource.saveTransactions(transaction);
     }
 
     @Override
-    public Transaction deleteTransaction(String id) {
-        return null;
+    public void deleteTransaction(String id) {
+        transactionDataSource.deleteTransactions(id);
     }
 }

@@ -1,17 +1,22 @@
 package org.model.transactions;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.model.transactions.builder.TransactionBuilder;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TransactionTest {
 
@@ -23,48 +28,43 @@ class TransactionTest {
         validator = factory.getValidator();
     }
 
-    @Test
-    public void validNominalCase() {
+    @ParameterizedTest(name="Validation test on transaction - run #{index} with [{arguments}]")
+    @MethodSource(value = "getTransactionDataSet")
+    public void validNominalCase(List<TransactionDetails> transactions, BankAccount bankAccountFrom, Integer expectedError) {
         Transaction transaction = new TransactionBuilder()
-                .addTransactions()
-                    .addTransaction()
-                        .withCategory().withId(1).withCategory("aCategory").withLabel("aLabel").done()
-                        .withIncome(0f).withOutcome(123.5f).done()
-                    .done()
-                    .withBankAccountFrom().withCategory("aCategory").withId(1).withLabel("aLabel").done()
+                .addTransactions(transactions)
+                .withBankAccountFrom(bankAccountFrom)
                 .build();
 
         Set<ConstraintViolation<Transaction>> constraintViolations = validator.validate(transaction);
 
-        assertEquals(0, constraintViolations.size(), "A validation error occurs");
+        assertEquals(expectedError, constraintViolations.size(), "Error when validating transaction object");
     }
 
-    @Test
-    public void validMissingBankAccount() {
-        Transaction transaction = new TransactionBuilder()
-                .addTransactions()
-                    .addTransaction()
-                        .withCategory().withId(1).withCategory("aCategory").withLabel("aLabel").done()
-                        .withIncome(0f).withOutcome(123.5f).done()
-                    .done()
+    /**
+     * Build data for validation unit tests
+     * @return a stream of test data set
+     */
+    private static Stream<Arguments> getTransactionDataSet() {
+        BankAccount aBankAccount = new BankAccount.BankAccountBuilder()
+                .withCategory("aCategory")
+                .withLabel("aLabel")
+                .withId(1)
                 .build();
 
-        Set<ConstraintViolation<Transaction>> constraintViolations = validator.validate(transaction);
+        TransactionDetails aValidTransaction = new TransactionDetails.TransactionDetailsBuilder()
+                .withOutcome(123.5f).withIncome(0f).build();
+        TransactionDetails aInvalidTransaction = new TransactionDetails.TransactionDetailsBuilder()
+                .withOutcome(123.5f).withIncome(10f).build();
 
-        assertEquals(1, constraintViolations.size(), "Bank Account cannot be empty");
+        List<TransactionDetails> validTransactionList = Stream.of(aValidTransaction).collect(Collectors.toList());
+        List<TransactionDetails> inValidTransactionList = Stream.of(aValidTransaction, aInvalidTransaction).collect(Collectors.toList());
+
+        return Stream.of(
+                Arguments.of(validTransactionList, aBankAccount, 0),
+                Arguments.of(validTransactionList, null, 1),
+                Arguments.of(Collections.EMPTY_LIST, aBankAccount, 1),
+                Arguments.of(inValidTransactionList, aBankAccount, 1)
+        );
     }
-
-    @Test
-    public void validEmptyTransactionList() {
-        Transaction transaction = new TransactionBuilder()
-                .withBankAccountFrom().withCategory("aCategory").withId(1).withLabel("aLabel").done()
-                .build();
-
-        Set<ConstraintViolation<Transaction>> constraintViolations = validator.validate(transaction);
-
-        assertEquals(1, constraintViolations.size(), "Bank Account cannot be empty");
-    }
-
-
-
 }

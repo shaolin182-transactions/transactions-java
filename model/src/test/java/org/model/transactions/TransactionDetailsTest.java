@@ -2,7 +2,9 @@ package org.model.transactions;
 
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -10,6 +12,7 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,63 +26,31 @@ class TransactionDetailsTest {
         validator = factory.getValidator();
     }
 
-    @Test
-    public void IncomeOutcomeBothSet() {
+    @ParameterizedTest(name = "Validation test on transaction detail - run #{index} with [{arguments}]")
+    @MethodSource(value = "getTransactionDetailDataSet")
+    public void validNominalCase(String description, Float outcome, Float income, Integer expectedError) {
         TransactionDetails transaction = new TransactionDetails.TransactionDetailsBuilder()
-                .withOutcome(10f)
-                .withIncome(10f)
+                .withDescription(description)
+                .withOutcome(outcome)
+                .withIncome(income)
                 .build();
 
         Set<ConstraintViolation<TransactionDetails>> constraintViolations = validator.validate(transaction);
 
-        assertEquals(1, constraintViolations.size(), "Error on validating transaction detail");
-        assertEquals("One of the properties 'income' and 'outcome' must be set", constraintViolations.iterator().next().getMessage(), "Wrong error message");
+        assertEquals(expectedError, constraintViolations.size(), "A validation error occurs");
     }
 
-    @Test
-    public void IncomeOutcomeNoneSet() {
-        TransactionDetails transaction = new TransactionDetails.TransactionDetailsBuilder().build();
-
-        Set<ConstraintViolation<TransactionDetails>> constraintViolations = validator.validate(transaction);
-
-        assertEquals(1, constraintViolations.size(), "Error on validating transaction detail");
-        assertEquals("One of the properties 'income' and 'outcome' must be set", constraintViolations.iterator().next().getMessage(), "Wrong error message");
-    }
-
-    @Test
-    public void IncomeNegative() {
-        TransactionDetails transaction = new TransactionDetails.TransactionDetailsBuilder()
-                .withIncome(-10f)
-                .build();
-
-        Set<ConstraintViolation<TransactionDetails>> constraintViolations = validator.validate(transaction);
-
-        assertEquals(1, constraintViolations.size(), "Error on validating transaction detail");
-        assertNotNull(constraintViolations.iterator().next().getMessage(), "Wrong error message");
-    }
-
-    @Test
-    public void OutcomeNegative() {
-        TransactionDetails transaction = new TransactionDetails.TransactionDetailsBuilder()
-                .withOutcome(-10f)
-                .build();
-
-        Set<ConstraintViolation<TransactionDetails>> constraintViolations = validator.validate(transaction);
-
-        assertEquals(1, constraintViolations.size(), "Error on validating transaction detail");
-        assertNotNull(constraintViolations.iterator().next().getMessage(), "Wrong error message");
-    }
-
-    @Test
-    public void validNominalCase() {
-        TransactionDetails transaction = new TransactionDetails.TransactionDetailsBuilder()
-                .withDescription("A classic ' description, with some special characters like this @.")
-                .withOutcome(10f)
-                .withIncome(0f)
-                .build();
-
-        Set<ConstraintViolation<TransactionDetails>> constraintViolations = validator.validate(transaction);
-
-        assertEquals(0, constraintViolations.size(), "A validation error occurs");
+    /**
+     * Build data for validation unit tests
+     * @return a stream of test data set
+     */
+    private static Stream<Arguments> getTransactionDetailDataSet() {
+        return Stream.of(
+                Arguments.of("A classic ' description, with some special characters like this @.", 10f, 0f, 0),
+                Arguments.of(null, -10f, null, 1),
+                Arguments.of(null, null, -10f, 1),
+                Arguments.of(null, null, null, 1),
+                Arguments.of(null, 10f, 10f, 1)
+        );
     }
 }
