@@ -25,14 +25,29 @@ public class TransactionBuilder {
         return this;
     }
 
+    public TransactionBuilder withBankAccountFrom(BankAccount bankAccount) {
+        instance.setFrom(bankAccount);
+        return this;
+    }
+
     public BankAccount.BankAccountBuilder withBankAccountFrom() {
         Consumer<BankAccount> callback = obj -> { instance.setFrom(obj);};
         return new BankAccount.BankAccountBuilder(this, callback);
     }
 
+    public TransactionBuilder withBankAccountTo(BankAccount bankAccount) {
+        instance.setTo(bankAccount);
+        return this;
+    }
+
     public BankAccount.BankAccountBuilder withBankAccountTo() {
         Consumer<BankAccount> callback = obj -> { instance.setTo(obj);};
         return new BankAccount.BankAccountBuilder(this, callback);
+    }
+
+    public TransactionBuilder addTransactions(List<TransactionDetails> transactions) {
+        instance.setTransactions(transactions);
+        return this;
     }
 
     public TransactionDetailsListBuilder addTransactions() {
