@@ -23,4 +23,3 @@ jobs:
       run: mvn -B clean package --file pom.xml
     - name: Build image
       run: docker build . --file Dockerfile --tag image --build-arg JAR_FILE=$GITHUB_WORKSPACE/api/target/*.jar
-    - name: Publish image
