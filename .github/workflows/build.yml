@@ -38,6 +38,7 @@ jobs:
       uses: actions/download-artifact@v1
       with:
         name: jarpack
+        path: ./api/target/
     - name: Build image
-      run: docker build . --file Dockerfile --tag image --build-arg JAR_FILE=$GITHUB_WORKSPACE/jarpack/*.jar
+      run: docker build . --file Dockerfile --tag image --build-arg JAR_FILE=$GITHUB_WORKSPACE/api/target/*.jar
 
