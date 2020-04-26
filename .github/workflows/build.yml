@@ -5,7 +5,9 @@ name: transactions-java CI - MASTER
 
 on:
   push:
-    branches: [ master, dockerize ]
+    branches:
+      - master
+      - dockerize
   pull_request:
     branches: [ master ]
 
