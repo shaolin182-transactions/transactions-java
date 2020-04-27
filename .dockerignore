@@ -1,0 +1,9 @@
+# Intellij
+.idea
+*.iml
+
+# Github
+.github
+
+# Exclude target directory
+**/target
