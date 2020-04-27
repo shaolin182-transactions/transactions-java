@@ -39,6 +39,9 @@ jobs:
       with:
         name: jarpack
         path: ./api/target/
+    - run: pwd $GITHUB_WORKSPACE
+    - run: ls -la
+    - run: ls -la ./api/target/
     - name: Build image
       run: docker build . --file Dockerfile --tag image --build-arg JAR_FILE=$GITHUB_WORKSPACE/api/target/*.jar
 
