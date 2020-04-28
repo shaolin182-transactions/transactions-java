@@ -27,11 +27,11 @@ public class TransactionDatasource implements ITransactionDataSource {
 
     @Override
     public void deleteTransactions(String id) {
-
+        repository.deleteById(id);
     }
 
     @Override
     public Transaction saveTransactions(Transaction aTransaction) {
-        return null;
+        return repository.save(aTransaction);
     }
 }
