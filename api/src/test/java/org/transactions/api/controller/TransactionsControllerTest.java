@@ -193,7 +193,7 @@ class TransactionsControllerTest {
         MvcResult result = mockMvc.perform(put("/transactions/someId")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(expectedTransaction)))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isOk())
                 .andReturn();
 
         String response = result.getResponse().getContentAsString();
