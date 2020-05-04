@@ -1,3 +1,4 @@
 # transactions-java
 
-![](https://github.com/actions/hello-world/workflows/.github/workflows/build.yml/badge.svg)
+![](https://github.com/shaolin182/transactions-java/workflows/build/badge.svg)
+![](https://github.com/shaolin182/transactions-java/workflows/deploy/badge.svg)
