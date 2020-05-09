@@ -26,6 +26,7 @@
     <module>model</module>
     <module>persistence-mongodb</module>
     <module>service</module>
+    <module>sonar-report</module>
   </modules>
 
   <properties>
@@ -53,7 +54,16 @@
     <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
     <maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
     <jacoco-plugin.version>0.8.4</jacoco-plugin.version>
+    <sonar-maven-plugin.version>3.6.0.1398</sonar-maven-plugin.version>
     <!-- END Plugins versions-->
+
+    <!-- SONAR Properties -->
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    <sonar.organization>shaolin182</sonar.organization>
+    <sonar.coverage.jacoco.xmlReportPaths>sonar-report/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    <aggregate.report.dir>sonar-report/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
+    <!-- END SONAR Properties -->
+
   </properties>
 
   <dependencyManagement>
@@ -74,6 +84,12 @@
       <dependency>
         <groupId>org.transactions</groupId>
         <artifactId>persistence-mongodb</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.transactions</groupId>
+        <artifactId>server</artifactId>
         <version>${project.version}</version>
       </dependency>
 
@@ -177,6 +193,11 @@
           <artifactId>jacoco-maven-plugin</artifactId>
           <version>${jacoco-plugin.version}</version>
         </plugin>
+        <plugin>
+          <groupId>org.sonarsource.scanner.maven</groupId>
+          <artifactId>sonar-maven-plugin</artifactId>
+          <version>${sonar-maven-plugin.version}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
 
@@ -185,9 +206,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <argLine>${surefireArgLine}</argLine>
-        </configuration>
       </plugin>
 
       <plugin>
@@ -199,26 +217,10 @@
             <goals>
               <goal>prepare-agent</goal>
             </goals>
-            <configuration>
-              <destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
-              <propertyName>surefireArgLine</propertyName>
-              <append>true</append>
-            </configuration>
-          </execution>
-          <!-- attached to Maven test phase -->
-          <execution>
-            <id>report</id>
-            <phase>test</phase>
-            <goals>
-              <goal>report</goal>
-            </goals>
-            <configuration>
-              <dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
-              <outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
-            </configuration>
           </execution>
         </executions>
       </plugin>
+
     </plugins>
   </build>
 </project>

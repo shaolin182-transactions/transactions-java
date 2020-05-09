@@ -12,14 +12,15 @@
   </parent>
   <artifactId>server</artifactId>
 
+  <properties>
+    <sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
 
   <name>server</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
-
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
 
   <dependencies>
     <dependency>
@@ -64,11 +65,14 @@
       <groupId>org.mockito</groupId>
       <artifactId>mockito-junit-jupiter</artifactId>
     </dependency>
+    <!-- END - For unit test-->
+
     <dependency>
       <groupId>org.transactions</groupId>
       <artifactId>persistence-mongodb</artifactId>
     </dependency>
-    <!-- END - For unit test-->
+
+
   </dependencies>
 
   <build>
@@ -77,6 +81,20 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
+
+<!--      <plugin>-->
+<!--        <groupId>org.jacoco</groupId>-->
+<!--        <artifactId>jacoco-maven-plugin</artifactId>-->
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <id>report</id>-->
+<!--            <goals>-->
+<!--              <goal>report-aggregate</goal>-->
+<!--            </goals>-->
+<!--            <phase>verify</phase>-->
+<!--          </execution>-->
+<!--        </executions>-->
+<!--      </plugin>-->
     </plugins>
   </build>
 </project>

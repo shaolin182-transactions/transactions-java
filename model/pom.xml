@@ -11,6 +11,10 @@
 
     <artifactId>model</artifactId>
 
+    <properties>
+        <sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -52,6 +56,5 @@
         <!-- END - For unit test-->
 
     </dependencies>
-
 
 </project>
