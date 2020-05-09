@@ -26,6 +26,7 @@
     <module>model</module>
     <module>persistence-mongodb</module>
     <module>service</module>
+    <module>sonar-report</module>
   </modules>
 
   <properties>
@@ -46,13 +47,23 @@
     <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
     <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
     <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
-    <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
+    <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
     <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
     <maven-install-plugin.version>2.5.2</maven-install-plugin.version>
     <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
     <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
     <maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
+    <jacoco-plugin.version>0.8.4</jacoco-plugin.version>
+    <sonar-maven-plugin.version>3.6.0.1398</sonar-maven-plugin.version>
     <!-- END Plugins versions-->
+
+    <!-- SONAR Properties -->
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    <sonar.organization>shaolin182</sonar.organization>
+    <sonar.coverage.jacoco.xmlReportPaths>sonar-report/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    <aggregate.report.dir>sonar-report/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
+    <!-- END SONAR Properties -->
+
   </properties>
 
   <dependencyManagement>
@@ -73,6 +84,12 @@
       <dependency>
         <groupId>org.transactions</groupId>
         <artifactId>persistence-mongodb</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.transactions</groupId>
+        <artifactId>server</artifactId>
         <version>${project.version}</version>
       </dependency>
 
@@ -115,6 +132,13 @@
         <version>${junit-jupiter.version}</version>
         <scope>test</scope>
       </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>${junit-jupiter.version}</version>
+        <scope>test</scope>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 
@@ -164,7 +188,39 @@
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>${maven-project-info-reports-plugin.version}</version>
         </plugin>
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${jacoco-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.sonarsource.scanner.maven</groupId>
+          <artifactId>sonar-maven-plugin</artifactId>
+          <version>${sonar-maven-plugin.version}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
+
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>pre-unit-test</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
   </build>
 </project>
