@@ -1,4 +1,4 @@
-name: transactions-java CI - PUBLISH DOCKER IMAGE
+name: deploy
 
 on:
   release:
