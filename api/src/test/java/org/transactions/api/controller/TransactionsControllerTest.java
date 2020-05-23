@@ -19,6 +19,7 @@ import org.transactions.exception.TransactionNotFoundException;
 import org.model.transactions.Transaction;
 import org.transactions.persistence.repositories.TransactionsRepository;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 
 import static org.mockito.Mockito.when;
@@ -110,6 +111,7 @@ class TransactionsControllerTest {
                         .withIncome(0f).withOutcome(123.5f).done()
                 .done()
                 .withBankAccountFrom().withCategory("aCategory").withId(1).withLabel("aLabel").done()
+                .withDate(OffsetDateTime.now())
                 .build();
 
         when(service.createTransaction(Mockito.any())).thenReturn(expectedTransaction);
