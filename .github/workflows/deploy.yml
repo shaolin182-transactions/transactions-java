@@ -20,7 +20,7 @@ jobs:
         id: vars
         run: echo ::set-output name=tag::$(echo ${GITHUB_REF:10})
       - name: Build image
-        run: docker build . --file Dockerfile --tag jugirard/transactions-java-server:${{steps.vars.outputs.tag}} --tag latest
+        run: docker build . --file Dockerfile --tag jugirard/transactions-java-server:${{steps.vars.outputs.tag}} --tag jugirard/transactions-java-server:latest
       - name: Push Docker Image
         run: docker push jugirard/transactions-java-server:${{steps.vars.outputs.tag}}
       - name: Push Docker Image latest tag
