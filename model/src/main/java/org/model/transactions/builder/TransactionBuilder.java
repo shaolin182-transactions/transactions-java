@@ -4,6 +4,7 @@ import org.model.transactions.BankAccount;
 import org.model.transactions.Transaction;
 import org.model.transactions.TransactionDetails;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -53,6 +54,11 @@ public class TransactionBuilder {
     public TransactionDetailsListBuilder addTransactions() {
         Consumer<List<TransactionDetails>> callback = obj -> {instance.setTransactions(obj);};
         return new TransactionDetailsListBuilder(this, callback);
+    }
+
+    public TransactionBuilder withDate(OffsetDateTime date){
+        instance.setDate(date);
+        return this;
     }
 
     public Transaction build(){
