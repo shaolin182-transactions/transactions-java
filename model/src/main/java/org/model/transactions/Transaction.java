@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 public class Transaction {
@@ -25,6 +26,9 @@ public class Transaction {
     @Valid
     @NotEmpty
     private List<TransactionDetails> transactions;
+
+    @NotNull
+    private OffsetDateTime date;
 
     /**
      * Cost in cents
@@ -74,5 +78,13 @@ public class Transaction {
 
     public void setCost(Long cost) {
         this.cost = cost;
+    }
+
+    public OffsetDateTime getDate() {
+        return date;
+    }
+
+    public void setDate(OffsetDateTime date) {
+        this.date = date;
     }
 }

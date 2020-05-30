@@ -10,6 +10,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +35,7 @@ class TransactionTest {
         Transaction transaction = new TransactionBuilder()
                 .addTransactions(transactions)
                 .withBankAccountFrom(bankAccountFrom)
+                .withDate(OffsetDateTime.now())
                 .build();
 
         Set<ConstraintViolation<Transaction>> constraintViolations = validator.validate(transaction);
