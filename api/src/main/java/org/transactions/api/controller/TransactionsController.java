@@ -58,7 +58,7 @@ public class TransactionsController {
      * @return transaction updated
      */
     @PutMapping(value = "/transactions/{id}", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<Transaction> updateTransaction(@PathVariable String id, @RequestBody Transaction transaction) {
+    public ResponseEntity<Transaction> updateTransaction(@PathVariable String id, @Valid @RequestBody Transaction transaction) {
         Transaction result = service.saveTransaction(id, transaction);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
