@@ -127,6 +127,29 @@ class TransactionsControllerTest {
         Assertions.assertThat(objectMapper.writeValueAsString(expectedTransaction)).isEqualToIgnoringCase(response);
     }
 
+    @DisplayName("Create Transaction - Nominal case with JSON")
+    @Test
+    public void createTransactionWithJSON() throws Exception {
+        String transaction = "{" +
+                "\"date\": \"2020-05-01T22:16:37.683+01:00\"," +
+                "\"from\": {\"id\": 1, \"category\": \"aCategory\", \"label\": \"aLabel\"}," +
+                "\"transactions\": [" +
+                "{" +
+                "\"income\": 0, \"outcome\": 123.5, \"description\": \"Some description\"," +
+                "\"category\":  {\"id\": 1, \"category\": \"aCategory\", \"label\": \"aLabel\"}" +
+                "}" +
+                "]" +
+                "}";
+
+        MvcResult result = mockMvc.perform(post("/transactions")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(transaction))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+
+    }
+
     @DisplayName("Create Transaction - JSON with incorrect data")
     @Test
     public void createTransactionWrongJSON() throws Exception {
@@ -188,6 +211,7 @@ class TransactionsControllerTest {
                 .done()
                 .withBankAccountFrom().withCategory("aCategory").withId(1).withLabel("aLabel").done()
                 .withId("someId")
+                .withDate(OffsetDateTime.now())
                 .build();
 
         when(service.saveTransaction(Mockito.anyString(), Mockito.any())).thenReturn(expectedTransaction);
