@@ -223,4 +223,12 @@
 
     </plugins>
   </build>
+
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub Transactions</name>
+      <url>https://maven.pkg.github.com/shaolin182/transactions-java</url>
+    </repository>
+  </distributionManagement>
 </project>
