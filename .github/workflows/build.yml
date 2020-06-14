@@ -23,4 +23,9 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    - name: Publish GitHub Package
+      uses: actions/upload-artifact@v2
+      with:
+        name: transactions-packages
+        path: /**/target/*.jar
 
