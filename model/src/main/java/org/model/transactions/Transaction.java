@@ -1,7 +1,5 @@
 package org.model.transactions;
 
-import org.springframework.data.annotation.Id;
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -13,7 +11,6 @@ public class Transaction {
     /**
      * Unique identifier of transactions
      */
-    @Id
     private String id;
 
     @Valid

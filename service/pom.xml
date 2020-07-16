@@ -21,6 +21,13 @@
             <artifactId>model</artifactId>
         </dependency>
 
+        <!-- Spring -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <!-- End Spring -->
+
         <!-- For unit test-->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
