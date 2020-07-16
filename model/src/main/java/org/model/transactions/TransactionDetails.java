@@ -5,9 +5,9 @@ import org.model.transactions.builder.TransactionDetailsListBuilder;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 @ValidIncomeOutcome
@@ -50,6 +50,22 @@ public class TransactionDetails {
         return description;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TransactionDetails that = (TransactionDetails) o;
+        return Objects.equals(category, that.category) &&
+                Objects.equals(income, that.income) &&
+                Objects.equals(outcome, that.outcome) &&
+                Objects.equals(description, that.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(category, income, outcome, description);
+    }
+
     public static class TransactionDetailsBuilder {
 
         private TransactionDetails instance;
@@ -58,7 +74,7 @@ public class TransactionDetails {
 
         private Consumer<TransactionDetails> callback;
 
-        TransactionDetailsBuilder() {
+        public TransactionDetailsBuilder() {
             this.instance = new TransactionDetails();
         }
 
@@ -88,10 +104,17 @@ public class TransactionDetails {
             return new TransactionCategory.TransactionCategoryBuilder(this, callback);
         }
 
+        public TransactionDetailsBuilder withCategory(TransactionCategory category){
+            instance.category = category;
+            return this;
+        }
+
         public TransactionDetailsListBuilder done(){
             callback.accept(instance);
             return parentBuilder;
         }
+
+        public
 
         TransactionDetails build() {
             return instance;

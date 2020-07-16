@@ -14,6 +14,10 @@ public class TransactionDetailsListBuilder {
 
     private Consumer<List<TransactionDetails>> callback;
 
+    public TransactionDetailsListBuilder() {
+
+    }
+
     public TransactionDetailsListBuilder(TransactionBuilder parentBuilder, Consumer<List<TransactionDetails>> callback) {
         this.parentBuilder = parentBuilder;
         this.callback = callback;
