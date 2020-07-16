@@ -3,6 +3,7 @@ package org.model.transactions;
 import org.model.transactions.builder.TransactionBuilder;
 
 import javax.validation.constraints.*;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class BankAccount {
@@ -48,6 +49,21 @@ public class BankAccount {
 
     public String getLabel() {
         return label;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BankAccount that = (BankAccount) o;
+        return id.equals(that.id) &&
+                category.equals(that.category) &&
+                label.equals(that.label);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, category, label);
     }
 
     /**
