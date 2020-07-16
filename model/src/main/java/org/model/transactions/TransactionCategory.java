@@ -1,6 +1,7 @@
 package org.model.transactions;
 
 import javax.validation.constraints.*;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class TransactionCategory {
@@ -55,6 +56,22 @@ public class TransactionCategory {
 
     public TransactionCategoryType getType() {
         return type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TransactionCategory that = (TransactionCategory) o;
+        return id.equals(that.id) &&
+                category.equals(that.category) &&
+                label.equals(that.label) &&
+                type == that.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, category, label, type);
     }
 
     public static class TransactionCategoryBuilder {
