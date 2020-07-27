@@ -31,7 +31,7 @@ class TransactionTest {
 
     @ParameterizedTest(name="Validation test on transaction - run #{index} with [{arguments}]")
     @MethodSource(value = "getTransactionDataSet")
-    public void validNominalCase(List<TransactionDetails> transactions, Integer expectedError) {
+    void validNominalCase(List<TransactionDetails> transactions, Integer expectedError) {
         Transaction transaction = new TransactionBuilder()
                 .addTransactions(transactions)
                 .withDate(OffsetDateTime.now())

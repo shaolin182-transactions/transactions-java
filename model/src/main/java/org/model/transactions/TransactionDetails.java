@@ -142,8 +142,8 @@ public class TransactionDetails {
         }
 
         public TransactionCategory.TransactionCategoryBuilder withCategory(){
-            Consumer<TransactionCategory> callback = obj -> { instance.category = obj;};
-            return new TransactionCategory.TransactionCategoryBuilder(this, callback);
+            Consumer<TransactionCategory> callbackMethod = obj -> instance.category = obj;
+            return new TransactionCategory.TransactionCategoryBuilder(this, callbackMethod);
         }
 
         public TransactionDetailsBuilder withCategory(TransactionCategory category){

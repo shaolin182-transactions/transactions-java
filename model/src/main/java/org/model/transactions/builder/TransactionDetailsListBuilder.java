@@ -25,8 +25,8 @@ public class TransactionDetailsListBuilder {
     }
 
     public TransactionDetails.TransactionDetailsBuilder addTransaction() {
-        Consumer<TransactionDetails> callback = obj -> { list.add(obj);};
-        return new TransactionDetails.TransactionDetailsBuilder(this, callback);
+        Consumer<TransactionDetails> callbackMethod = obj ->  list.add(obj);
+        return new TransactionDetails.TransactionDetailsBuilder(this, callbackMethod);
     }
 
     public TransactionBuilder done(){

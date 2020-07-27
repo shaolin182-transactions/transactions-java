@@ -28,7 +28,7 @@ class BankAccountTest {
 
     @ParameterizedTest(name="Validation test on bank account - run #{index} with [{arguments}]")
     @MethodSource("getBankAccountDataSet")
-    public void validBankAccount(String category, Integer id, String label, Integer expectedError) {
+    void validBankAccount(String category, Integer id, String label, Integer expectedError) {
         BankAccount bankAccount = new BankAccount.BankAccountBuilder()
                 .withLabel(label)
                 .withId(id)

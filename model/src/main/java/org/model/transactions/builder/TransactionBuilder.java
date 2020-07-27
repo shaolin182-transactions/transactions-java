@@ -31,7 +31,7 @@ public class TransactionBuilder {
     }
 
     public TransactionDetailsListBuilder addTransactions() {
-        Consumer<List<TransactionDetails>> callback = obj -> {instance.setTransactions(obj);};
+        Consumer<List<TransactionDetails>> callback = obj -> instance.setTransactions(obj);
         return new TransactionDetailsListBuilder(this, callback);
     }
 

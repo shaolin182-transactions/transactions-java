@@ -2,11 +2,11 @@ package org.model.error;
 
 public class Error {
 
-    public Integer code;
+    private Integer code;
 
-    public String message;
+    private String message;
 
-    public String details;
+    private String details;
 
     public Error(Integer code, String message){
         this.code = code;

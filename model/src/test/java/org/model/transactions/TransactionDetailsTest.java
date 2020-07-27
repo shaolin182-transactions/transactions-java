@@ -28,7 +28,7 @@ class TransactionDetailsTest {
 
     @ParameterizedTest(name = "Validation test on transaction detail - run #{index} with [{arguments}]")
     @MethodSource(value = "getTransactionDetailDataSet")
-    public void validNominalCase(String description, Float outcome, Float income, BankAccount from, Integer expectedError) {
+    void validNominalCase(String description, Float outcome, Float income, BankAccount from, Integer expectedError) {
         TransactionDetails transaction = new TransactionDetails.TransactionDetailsBuilder()
                 .withBankAccount(from)
                 .withDescription(description)

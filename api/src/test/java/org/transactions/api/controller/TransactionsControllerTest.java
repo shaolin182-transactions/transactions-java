@@ -129,7 +129,7 @@ class TransactionsControllerTest {
 
     @DisplayName("Create Transaction - Nominal case with JSON")
     @Test
-    public void createTransactionWithJSON() throws Exception {
+    void createTransactionWithJSON() throws Exception {
         String transaction = "{" +
                 "\"date\": \"2020-05-01T22:16:37.683+01:00\"," +
                 "\"transactions\": [" +
@@ -152,7 +152,7 @@ class TransactionsControllerTest {
 
     @DisplayName("Create Transaction - JSON with incorrect data")
     @Test
-    public void createTransactionWrongJSON() throws Exception {
+    void createTransactionWrongJSON() throws Exception {
         String transaction = "{" +
 
                 "\"transactions\": [" +
@@ -173,7 +173,7 @@ class TransactionsControllerTest {
 
     @DisplayName("Create Transaction - Correct JSON with invalid data")
     @Test
-    public void createTransactionWWithInvalidData() throws Exception {
+    void createTransactionWWithInvalidData() throws Exception {
         String transaction = "{" +
 
                 "\"transactions\": [" +
@@ -194,7 +194,7 @@ class TransactionsControllerTest {
 
     @DisplayName("Delete Transaction - Nominal Case")
     @Test
-    public void deleteTransaction() throws Exception {
+    void deleteTransaction() throws Exception {
 
         mockMvc.perform(delete("/transactions/someId")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -203,7 +203,7 @@ class TransactionsControllerTest {
 
     @DisplayName("Update Transaction - Nominal Case")
     @Test
-    public void updateTransaction() throws Exception {
+    void updateTransaction() throws Exception {
 
         Transaction expectedTransaction = new TransactionBuilder()
                 .addTransactions()
