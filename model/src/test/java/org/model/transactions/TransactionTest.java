@@ -31,10 +31,9 @@ class TransactionTest {
 
     @ParameterizedTest(name="Validation test on transaction - run #{index} with [{arguments}]")
     @MethodSource(value = "getTransactionDataSet")
-    public void validNominalCase(List<TransactionDetails> transactions, BankAccount bankAccountFrom, Integer expectedError) {
+    public void validNominalCase(List<TransactionDetails> transactions, Integer expectedError) {
         Transaction transaction = new TransactionBuilder()
                 .addTransactions(transactions)
-                .withBankAccountFrom(bankAccountFrom)
                 .withDate(OffsetDateTime.now())
                 .build();
 
@@ -55,18 +54,21 @@ class TransactionTest {
                 .build();
 
         TransactionDetails aValidTransaction = new TransactionDetails.TransactionDetailsBuilder()
-                .withOutcome(123.5f).withIncome(0f).build();
+                .withOutcome(123.5f).withIncome(0f)
+                .withBankAccount(aBankAccount)
+                .build();
         TransactionDetails aInvalidTransaction = new TransactionDetails.TransactionDetailsBuilder()
-                .withOutcome(123.5f).withIncome(10f).build();
+                .withOutcome(123.5f).withIncome(10f)
+                .withBankAccount(aBankAccount)
+                .build();
 
         List<TransactionDetails> validTransactionList = Stream.of(aValidTransaction).collect(Collectors.toList());
         List<TransactionDetails> inValidTransactionList = Stream.of(aValidTransaction, aInvalidTransaction).collect(Collectors.toList());
 
         return Stream.of(
-                Arguments.of(validTransactionList, aBankAccount, 0),
-                Arguments.of(validTransactionList, null, 1),
-                Arguments.of(Collections.EMPTY_LIST, aBankAccount, 1),
-                Arguments.of(inValidTransactionList, aBankAccount, 1)
+                Arguments.of(validTransactionList, 0),
+                Arguments.of(Collections.EMPTY_LIST, 1),
+                Arguments.of(inValidTransactionList, 1)
         );
     }
 }

@@ -28,8 +28,9 @@ class TransactionDetailsTest {
 
     @ParameterizedTest(name = "Validation test on transaction detail - run #{index} with [{arguments}]")
     @MethodSource(value = "getTransactionDetailDataSet")
-    public void validNominalCase(String description, Float outcome, Float income, Integer expectedError) {
+    public void validNominalCase(String description, Float outcome, Float income, BankAccount from, Integer expectedError) {
         TransactionDetails transaction = new TransactionDetails.TransactionDetailsBuilder()
+                .withBankAccount(from)
                 .withDescription(description)
                 .withOutcome(outcome)
                 .withIncome(income)
@@ -45,12 +46,15 @@ class TransactionDetailsTest {
      * @return a stream of test data set
      */
     private static Stream<Arguments> getTransactionDetailDataSet() {
+        BankAccount account = new BankAccount.BankAccountBuilder()
+                .withCategory("cat").withLabel("label").withId(1).build();
+
         return Stream.of(
-                Arguments.of("A classic ' description, with some special characters like this @.", 10f, 0f, 0),
-                Arguments.of(null, -10f, null, 1),
-                Arguments.of(null, null, -10f, 1),
-                Arguments.of(null, null, null, 1),
-                Arguments.of(null, 10f, 10f, 1)
+                Arguments.of("A classic ' description, with some special characters like this @.", 10f, 0f, account, 0),
+                Arguments.of(null, -10f, null, account, 1),
+                Arguments.of(null, null, -10f, account, 1),
+                Arguments.of(null, null, null, account, 1),
+                Arguments.of(null, 10f, 10f, account, 1)
         );
     }
 }
