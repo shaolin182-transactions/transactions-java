@@ -1,6 +1,6 @@
 package org.model.transactions;
 
-import org.model.transactions.builder.TransactionBuilder;
+import org.model.transactions.TransactionDetails.TransactionDetailsBuilder;
 
 import javax.validation.constraints.*;
 import java.util.Objects;
@@ -71,7 +71,7 @@ public class BankAccount {
      */
     public static class BankAccountBuilder {
 
-        private TransactionBuilder parentBuilder;
+        private TransactionDetailsBuilder parentBuilder;
 
         private Consumer<BankAccount> callback;
 
@@ -81,7 +81,7 @@ public class BankAccount {
             this.instance = new BankAccount();
         }
 
-        public BankAccountBuilder(TransactionBuilder parentBuilder, Consumer<BankAccount> callback){
+        public BankAccountBuilder(TransactionDetailsBuilder parentBuilder, Consumer<BankAccount> callback){
             this.parentBuilder = parentBuilder;
             this.callback = callback;
             this.instance = new BankAccount();
@@ -102,7 +102,7 @@ public class BankAccount {
             return this;
         }
 
-        public TransactionBuilder done(){
+        public TransactionDetailsBuilder done(){
             callback.accept(instance);
             return parentBuilder;
         }

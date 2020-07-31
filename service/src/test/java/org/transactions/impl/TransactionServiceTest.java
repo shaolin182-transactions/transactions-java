@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.model.transactions.TransactionType;
 import org.model.transactions.builder.TransactionBuilder;
 import org.transactions.connector.ITransactionDataSource;
 import org.transactions.exception.TransactionNotFoundException;
@@ -78,6 +79,26 @@ class TransactionServiceTest {
         Transaction result = new TransactionService(dataSource).createTransaction(transaction);
 
         Assertions.assertEquals(1813l, result.getCost(), "Error on cost computation");
+        Assertions.assertEquals(1813l, result.getCostAbs(), "Error on cost computation");
+        Assertions.assertEquals(TransactionType.INCOME, result.getType(), "Error on cost computation");
+    }
+
+    @Test
+    @DisplayName("CREATE Transaction - Nominal case - Outcome")
+    void createTransactionTestOutcomeType(@Mock ITransactionDataSource dataSource){
+        // Prepare tests
+        Transaction transaction = new TransactionBuilder().addTransactions()
+                .addTransaction().withIncome(0f).withOutcome(145.26f).done()
+                .done().build();
+
+        when(dataSource.saveTransactions(transaction)).thenReturn(transaction);
+
+        // Run test
+        Transaction result = new TransactionService(dataSource).createTransaction(transaction);
+
+        Assertions.assertEquals(-14526l, result.getCost(), "Error on cost computation");
+        Assertions.assertEquals(14526l, result.getCostAbs(), "Error on cost computation");
+        Assertions.assertEquals(TransactionType.OUTCOME, result.getType(), "Error on cost computation");
     }
 
     @Test
