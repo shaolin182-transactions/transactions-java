@@ -16,14 +16,15 @@ class TransactionBuilderTest {
         Transaction transaction = new TransactionBuilder()
                 .withId("idTransaction")
                 .withCost(Long.valueOf(15456))
-                .withBankAccountFrom().withCategory("PEE").withId(1).withLabel("PEE_label").done()
-                .withBankAccountTo().withCategory("Commun").withId(3).withLabel("Commun_label").done()
+
                 .addTransactions()
                     .addTransaction()
                         .withCategory().withLabel("Cat1").withId(4).withCategory("ACat").withType(COURANTE).done()
+                        .withBankAccount().withCategory("PEE").withId(1).withLabel("PEE_label").done()
                         .withDescription("desc").withIncome(Float.valueOf(0)).withOutcome(Float.valueOf(5.5f)).done()
                     .addTransaction()
                         .withCategory().withLabel("Cat2").withId(78).withCategory("BCat").withType(EXTRA).done()
+                        .withBankAccount().withCategory("PEE").withId(1).withLabel("PEE_label").done()
                         .withDescription("desc2").withIncome(Float.valueOf(4.8f)).withOutcome(Float.valueOf(0)).done()
                 .done()
                 .build();
@@ -32,15 +33,6 @@ class TransactionBuilderTest {
         assertEquals("idTransaction", transaction.getId());
         assertEquals(Long.valueOf(15456), transaction.getCost());
 
-        // Bank Account From
-        assertEquals("PEE", transaction.getFrom().getCategory());
-        assertEquals(1, transaction.getFrom().getId());
-        assertEquals("PEE_label", transaction.getFrom().getLabel());
-
-        // Bank Account To
-        assertEquals("Commun", transaction.getTo().getCategory());
-        assertEquals(3, transaction.getTo().getId());
-        assertEquals("Commun_label", transaction.getTo().getLabel());
 
         // Transactions list
         assertEquals(2, transaction.getTransactions().size());
@@ -54,6 +46,11 @@ class TransactionBuilderTest {
         assertEquals("ACat", transaction.getTransactions().get(0).getCategory().getCategory());
         assertEquals(COURANTE, transaction.getTransactions().get(0).getCategory().getType());
 
+        // Bank Account
+        assertEquals("PEE", transaction.getTransactions().get(0).getBankAccount().getCategory());
+        assertEquals(1, transaction.getTransactions().get(0).getBankAccount().getId());
+        assertEquals("PEE_label", transaction.getTransactions().get(0).getBankAccount().getLabel());
+
         // Transactions list - Item 2
         assertEquals("desc2", transaction.getTransactions().get(1).getDescription());
         assertEquals(Float.valueOf(4.8f), transaction.getTransactions().get(1).getIncome());
@@ -62,5 +59,10 @@ class TransactionBuilderTest {
         assertEquals("Cat2", transaction.getTransactions().get(1).getCategory().getLabel());
         assertEquals("BCat", transaction.getTransactions().get(1).getCategory().getCategory());
         assertEquals(EXTRA, transaction.getTransactions().get(1).getCategory().getType());
+
+        // Bank Account
+        assertEquals("PEE", transaction.getTransactions().get(1).getBankAccount().getCategory());
+        assertEquals(1, transaction.getTransactions().get(1).getBankAccount().getId());
+        assertEquals("PEE_label", transaction.getTransactions().get(1).getBankAccount().getLabel());
     }
 }

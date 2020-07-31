@@ -4,6 +4,7 @@ import org.model.constraint.ValidIncomeOutcome;
 import org.model.transactions.builder.TransactionDetailsListBuilder;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
@@ -30,6 +31,20 @@ public class TransactionDetails {
     @Pattern(regexp = "^[a-zA-Z0-9_@./# &,'-]*$")
     private String description;
 
+    @Valid
+    @NotNull
+    private BankAccount bankAccount;
+
+    /**
+     * Cost in cents
+     */
+    private Long cost;
+
+    /**
+     * Absolute value of cost field
+     */
+    private Long costAbs;
+
     private TransactionDetails() {
 
     }
@@ -50,6 +65,30 @@ public class TransactionDetails {
         return description;
     }
 
+    public BankAccount getBankAccount() {
+        return bankAccount;
+    }
+
+    public void setBankAccount(BankAccount bankAccount) {
+        this.bankAccount = bankAccount;
+    }
+
+    public Long getCost() {
+        return cost;
+    }
+
+    public void setCost(Long cost) {
+        this.cost = cost;
+    }
+
+    public Long getCostAbs() {
+        return costAbs;
+    }
+
+    public void setCostAbs(Long costAbs) {
+        this.costAbs = costAbs;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -58,12 +97,15 @@ public class TransactionDetails {
         return Objects.equals(category, that.category) &&
                 Objects.equals(income, that.income) &&
                 Objects.equals(outcome, that.outcome) &&
-                Objects.equals(description, that.description);
+                Objects.equals(description, that.description) &&
+                Objects.equals(bankAccount, that.bankAccount) &&
+                Objects.equals(cost, that.cost) &&
+                Objects.equals(costAbs, that.costAbs);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(category, income, outcome, description);
+        return Objects.hash(category, income, outcome, description, bankAccount, cost, costAbs);
     }
 
     public static class TransactionDetailsBuilder {
@@ -100,8 +142,8 @@ public class TransactionDetails {
         }
 
         public TransactionCategory.TransactionCategoryBuilder withCategory(){
-            Consumer<TransactionCategory> callback = obj -> { instance.category = obj;};
-            return new TransactionCategory.TransactionCategoryBuilder(this, callback);
+            Consumer<TransactionCategory> callbackMethod = obj -> instance.category = obj;
+            return new TransactionCategory.TransactionCategoryBuilder(this, callbackMethod);
         }
 
         public TransactionDetailsBuilder withCategory(TransactionCategory category){
@@ -114,10 +156,26 @@ public class TransactionDetails {
             return parentBuilder;
         }
 
-        public
+        public TransactionDetailsBuilder withBankAccount(BankAccount bankAccount) {
+            instance.setBankAccount(bankAccount);
+            return this;
+        }
 
-        TransactionDetails build() {
+        public BankAccount.BankAccountBuilder withBankAccount() {
+            Consumer<BankAccount> callback = obj -> { instance.setBankAccount(obj);};
+            return new BankAccount.BankAccountBuilder(this, callback);
+        }
+
+        public TransactionDetails build() {
             return instance;
         }
+    }
+
+    public void computeDynamicFields() {
+        // Compute total cost in cent
+        cost = (long) Math.round((income - outcome) * 100);
+
+        // Compute absolute value of cost
+        costAbs =  Math.abs(cost);
     }
 }

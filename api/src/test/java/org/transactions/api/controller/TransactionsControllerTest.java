@@ -83,10 +83,10 @@ class TransactionsControllerTest {
                 .addTransactions()
                     .addTransaction()
                         .withCategory().withId(1).withCategory("desc").withLabel("label").done()
+                        .withBankAccount().withCategory("cat").withId(2).withLabel("label").done()
                         .withIncome(12f).withOutcome(0f).done()
                 .done()
                 .withCost(12L)
-                .withBankAccountFrom().withCategory("cat").withId(2).withLabel("label").done()
                 .build();
 
         when(service.getTransaction(Mockito.anyString())).thenReturn(expectedTransaction);
@@ -108,9 +108,9 @@ class TransactionsControllerTest {
                 .addTransactions()
                     .addTransaction()
                         .withCategory().withId(1).withCategory("aCategory").withLabel("aLabel").done()
+                        .withBankAccount().withCategory("aCategory").withId(1).withLabel("aLabel").done()
                         .withIncome(0f).withOutcome(123.5f).done()
                 .done()
-                .withBankAccountFrom().withCategory("aCategory").withId(1).withLabel("aLabel").done()
                 .withDate(OffsetDateTime.now())
                 .build();
 
@@ -129,12 +129,12 @@ class TransactionsControllerTest {
 
     @DisplayName("Create Transaction - Nominal case with JSON")
     @Test
-    public void createTransactionWithJSON() throws Exception {
+    void createTransactionWithJSON() throws Exception {
         String transaction = "{" +
                 "\"date\": \"2020-05-01T22:16:37.683+01:00\"," +
-                "\"from\": {\"id\": 1, \"category\": \"aCategory\", \"label\": \"aLabel\"}," +
                 "\"transactions\": [" +
                 "{" +
+                "\"bankAccount\": {\"id\": 1, \"category\": \"aCategory\", \"label\": \"aLabel\"}," +
                 "\"income\": 0, \"outcome\": 123.5, \"description\": \"Some description\"," +
                 "\"category\":  {\"id\": 1, \"category\": \"aCategory\", \"label\": \"aLabel\"}" +
                 "}" +
@@ -152,11 +152,12 @@ class TransactionsControllerTest {
 
     @DisplayName("Create Transaction - JSON with incorrect data")
     @Test
-    public void createTransactionWrongJSON() throws Exception {
+    void createTransactionWrongJSON() throws Exception {
         String transaction = "{" +
-                "\"fromm\": {\"id\": 1, \"category\": \"aCategory\", \"label\": \"aLabel\"}," +
+
                 "\"transactions\": [" +
                 "{" +
+                "\"bankAccountt\": {\"id\": 1, \"category\": \"aCategory\", \"label\": \"aLabel\"}," +
                 "\"income\": 0, \"outcome\": 123.5, \"description\": \"Some description\"," +
                 "\"category\":  {\"id\": 1, \"category\": \"aCategory\", \"label\": \"aLabel\"}" +
                 "}" +
@@ -172,13 +173,14 @@ class TransactionsControllerTest {
 
     @DisplayName("Create Transaction - Correct JSON with invalid data")
     @Test
-    public void createTransactionWWithInvalidData() throws Exception {
+    void createTransactionWWithInvalidData() throws Exception {
         String transaction = "{" +
-                "\"from\": {\"id\": 1, \"category\": \"aCategory\", \"label\": \"aLabel\"}," +
+
                 "\"transactions\": [" +
                 "{" +
                 "\"income\": 10, \"outcome\": 123.5, \"description\": \"Some description\"," +
                 "\"category\":  {\"id\": 1, \"category\": \"aCategory\", \"label\": \"aLabel\"}" +
+                "\"from\": {\"id\": 1, \"category\": \"aCategory\", \"label\": \"aLabel\"}," +
                 "}" +
                 "]" +
                 "}";
@@ -192,7 +194,7 @@ class TransactionsControllerTest {
 
     @DisplayName("Delete Transaction - Nominal Case")
     @Test
-    public void deleteTransaction() throws Exception {
+    void deleteTransaction() throws Exception {
 
         mockMvc.perform(delete("/transactions/someId")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -201,15 +203,15 @@ class TransactionsControllerTest {
 
     @DisplayName("Update Transaction - Nominal Case")
     @Test
-    public void updateTransaction() throws Exception {
+    void updateTransaction() throws Exception {
 
         Transaction expectedTransaction = new TransactionBuilder()
                 .addTransactions()
-                .addTransaction()
-                .withCategory().withId(1).withCategory("aCategory").withLabel("aLabel").done()
-                .withIncome(0f).withOutcome(123.5f).done()
-                .done()
-                .withBankAccountFrom().withCategory("aCategory").withId(1).withLabel("aLabel").done()
+                    .addTransaction()
+                        .withCategory().withId(1).withCategory("aCategory").withLabel("aLabel").done()
+                        .withBankAccount().withCategory("aCategory").withId(1).withLabel("aLabel").done()
+                        .withIncome(0f).withOutcome(123.5f).done()
+                        .done()
                 .withId("someId")
                 .withDate(OffsetDateTime.now())
                 .build();

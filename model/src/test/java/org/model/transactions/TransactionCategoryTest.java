@@ -27,7 +27,7 @@ class TransactionCategoryTest {
 
     @ParameterizedTest(name="Validation test on category - run #{index} with [{arguments}]")
     @MethodSource("getCategoryDataSet")
-    public void validTransactionCategory(String category, Integer id, String label, Integer expectedError) {
+    void validTransactionCategory(String category, Integer id, String label, Integer expectedError) {
         TransactionCategory transactionCategory = new TransactionCategory.TransactionCategoryBuilder()
                 .withLabel(label)
                 .withCategory(category)

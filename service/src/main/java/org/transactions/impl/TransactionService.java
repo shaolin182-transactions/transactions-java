@@ -1,11 +1,11 @@
 package org.transactions.impl;
 
+import org.model.transactions.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.transactions.ITransactionService;
 import org.transactions.connector.ITransactionDataSource;
 import org.transactions.exception.TransactionNotFoundException;
-import org.model.transactions.Transaction;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,9 +39,9 @@ public class TransactionService implements ITransactionService {
 
     @Override
     public Transaction createTransaction(Transaction transaction) {
-        // Compute total cost in cent
-        Float cost = transaction.getTransactions().stream().map(item -> item.getIncome() - item.getOutcome()).reduce(0f, Float::sum);
-        transaction.setCost((long) (cost * 100));
+
+        transaction.computeDynamicFields();
+        transaction.getTransactions().stream().forEach(aTransaction -> aTransaction.computeDynamicFields());
 
         // Persist in database
         return transactionDataSource.saveTransactions(transaction);
