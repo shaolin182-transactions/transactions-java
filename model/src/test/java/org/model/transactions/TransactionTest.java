@@ -56,6 +56,7 @@ class TransactionTest {
         TransactionDetails aValidTransaction = new TransactionDetails.TransactionDetailsBuilder()
                 .withOutcome(123.5f).withIncome(0f)
                 .withBankAccount(aBankAccount)
+                .withDescription("Some description @ï89")
                 .build();
         TransactionDetails aInvalidTransaction = new TransactionDetails.TransactionDetailsBuilder()
                 .withOutcome(123.5f).withIncome(10f)
