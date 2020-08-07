@@ -46,6 +46,7 @@ class TransactionCategoryTest {
     private static Stream<Arguments> getCategoryDataSet() {
         return Stream.of(
                 Arguments.of("A category type", 1, "A category Label", 0),
+                Arguments.of("A category type with accent ad number é1", 2, "A category Label with accent ad number à9", 0),
                 Arguments.of("A category type", 1000, "A category Label", 1),
                 Arguments.of(random(100, true, true), 100, "A category Label", 1),
                 Arguments.of("A category type", 100, random(100, true, true), 1)

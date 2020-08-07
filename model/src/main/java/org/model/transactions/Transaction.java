@@ -17,7 +17,7 @@ public class Transaction {
     private String id;
 
     @Size(max = 512)
-    @Pattern(regexp = "^[a-zA-Z0-9_@./# &,'-]*$")
+    @Pattern(regexp = "^[\\p{L}0-9_@./# &,'-]*$")
     private String description;
 
     @Valid
