@@ -1,9 +1,12 @@
 package org.model.transactions;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.model.transactions.TransactionCategory.TransactionCategoryBuilder;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -28,7 +31,7 @@ class TransactionCategoryTest {
     @ParameterizedTest(name="Validation test on category - run #{index} with [{arguments}]")
     @MethodSource("getCategoryDataSet")
     void validTransactionCategory(String category, Integer id, String label, Integer expectedError) {
-        TransactionCategory transactionCategory = new TransactionCategory.TransactionCategoryBuilder()
+        TransactionCategory transactionCategory = new TransactionCategoryBuilder()
                 .withLabel(label)
                 .withCategory(category)
                 .withId(id)
@@ -46,11 +49,30 @@ class TransactionCategoryTest {
     private static Stream<Arguments> getCategoryDataSet() {
         return Stream.of(
                 Arguments.of("A category type", 1, "A category Label", 0),
-                Arguments.of("A category type with accent ad number é1", 2, "A category Label with accent ad number à9", 0),
+                Arguments.of("A category type with accent ad number é1 &", 2, "A category Label with accent ad number à9", 0),
                 Arguments.of("A category type", 1000, "A category Label", 1),
                 Arguments.of(random(100, true, true), 100, "A category Label", 1),
                 Arguments.of("A category type", 100, random(100, true, true), 1)
         );
+    }
+
+    @Test
+    void testEqualsCategoryObject() {
+        TransactionCategory cat1 = new TransactionCategoryBuilder()
+                .withCategory("someCat").withLabel("label").withId(1)
+                .build();
+
+        TransactionCategory  cat2 = new TransactionCategoryBuilder()
+                .withCategory("someCat").withLabel("label").withId(1)
+                .build();
+
+        TransactionCategory  cat3 = new TransactionCategoryBuilder()
+                .withCategory("someDifferentCat").withLabel("label").withId(1)
+                .build();
+
+        Assertions.assertEquals(cat1, cat2, "Category with same properties values should be equals");
+        Assertions.assertEquals(cat1, cat1, "Same object should be equals");
+        Assertions.assertNotEquals(cat1, cat3, "Category with different properties values should be equals");
     }
 
 }
