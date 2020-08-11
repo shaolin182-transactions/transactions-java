@@ -20,7 +20,7 @@ public class BankAccount {
      * Categorize bank account
      */
     @Size(max = 64)
-    @Pattern(regexp = "^[\\p{L}0-9/ ,'-]*$")
+    @Pattern(regexp = "^[\\p{L}0-9/ ,'&-]*$")
     @NotNull
     private String category;
 
@@ -28,7 +28,7 @@ public class BankAccount {
      * Bank account label
      */
     @Size(max = 64)
-    @Pattern(regexp = "^[\\p{L}0-9/ ,'-]*$")
+    @Pattern(regexp = "^[\\p{L}0-9/ ,'&-]*$")
     @NotNull
     private String label;
 
@@ -36,7 +36,7 @@ public class BankAccount {
      * Private constructor - New BankAccount object must be created through builder
      */
     private BankAccount(){
-
+        id = -1;
     }
 
     public Integer getId() {

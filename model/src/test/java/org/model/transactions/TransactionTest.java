@@ -1,5 +1,6 @@
 package org.model.transactions;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -71,5 +72,24 @@ class TransactionTest {
                 Arguments.of(Collections.EMPTY_LIST, 1),
                 Arguments.of(inValidTransactionList, 1)
         );
+    }
+
+    void testEqualsMethod() {
+        Transaction obj1 = new TransactionBuilder()
+                .addTransactions().addTransaction().withIncome(12f).withOutcome(0f).done().done()
+                .build();
+
+        Transaction obj2 = new TransactionBuilder()
+                .addTransactions().addTransaction().withIncome(12f).withOutcome(0f).done().done()
+                .build();
+
+        Transaction obj3 = new TransactionBuilder()
+                .addTransactions().addTransaction().withIncome(12f).withOutcome(0f).done().done()
+                .withDate(OffsetDateTime.now())
+                .build();
+
+        Assertions.assertEquals(obj1, obj2, "Category with same properties values should be equals");
+        Assertions.assertEquals(obj1, obj1, "Same object should be equals");
+        Assertions.assertNotEquals(obj1, obj3, "Category with different properties values should be equals");
     }
 }

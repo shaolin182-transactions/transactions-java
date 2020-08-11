@@ -21,7 +21,7 @@ public class TransactionDetailsListBuilder {
     public TransactionDetailsListBuilder(TransactionBuilder parentBuilder, Consumer<List<TransactionDetails>> callback) {
         this.parentBuilder = parentBuilder;
         this.callback = callback;
-        list = new ArrayList<TransactionDetails>();
+        list = new ArrayList<>();
     }
 
     public TransactionDetails.TransactionDetailsBuilder addTransaction() {
