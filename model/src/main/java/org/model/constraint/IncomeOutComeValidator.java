@@ -17,13 +17,12 @@ public class IncomeOutComeValidator implements ConstraintValidator<ValidIncomeOu
     @Override
     public boolean isValid(TransactionDetails transaction, ConstraintValidatorContext constraintValidatorContext) {
 
-        if (transaction.getIncome() == null && transaction.getOutcome() == null) {
+        if ((transaction.getIncome() == null && transaction.getOutcome() == null)
+            || (transaction.getIncome() != null && transaction.getOutcome() != null && transaction.getIncome() != 0 && transaction.getOutcome() != 0)) {
             // Both properties are not set
             return false;
-        } else if (transaction.getIncome() != null && transaction.getOutcome() != null && transaction.getIncome() != 0 && transaction.getOutcome() != 0){
-            // Both properties are set
-            return false;
         }
+
         return true;
     }
 

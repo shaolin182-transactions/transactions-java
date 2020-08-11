@@ -1,6 +1,7 @@
 package org.model.transactions;
 
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -56,5 +57,29 @@ class TransactionDetailsTest {
                 Arguments.of(null, null, null, account, 1),
                 Arguments.of(null, 10f, 10f, account, 1)
         );
+    }
+
+    void testEqualsMethod() {
+        TransactionDetails obj1 = new TransactionDetails.TransactionDetailsBuilder()
+                .withIncome(0f).withOutcome(45.2f).withDescription("somedesc")
+                .withBankAccount().withCategory("cat").withId(1).withLabel("label").done()
+                .withCategory().withCategory("cat").withId(1).withLabel("label").done()
+                .build();
+
+        TransactionDetails obj2 = new TransactionDetails.TransactionDetailsBuilder()
+                .withIncome(0f).withOutcome(45.2f).withDescription("somedesc")
+                .withBankAccount().withCategory("cat").withId(1).withLabel("label").done()
+                .withCategory().withCategory("cat").withId(1).withLabel("label").done()
+                .build();
+
+        TransactionDetails obj3 = new TransactionDetails.TransactionDetailsBuilder()
+                .withIncome(0f).withOutcome(45.2f).withDescription("someOtherdesc")
+                .withBankAccount().withCategory("cat").withId(1).withLabel("label").done()
+                .withCategory().withCategory("cat").withId(1).withLabel("label").done()
+                .build();
+
+        Assertions.assertEquals(obj1, obj2, "Category with same properties values should be equals");
+        Assertions.assertEquals(obj1, obj1, "Same object should be equals");
+        Assertions.assertNotEquals(obj1, obj3, "Category with different properties values should be equals");
     }
 }

@@ -18,7 +18,7 @@ public class TransactionCategory {
      * Parent Category
      */
     @Size(max = 64)
-    @Pattern(regexp = "^[\\p{L}0-9/ ,'-]*$")
+    @Pattern(regexp = "^[\\p{L}0-9/ ,'&-]*$")
     @NotNull
     private String category;
 
@@ -26,7 +26,7 @@ public class TransactionCategory {
      * Category label
      */
     @Size(max = 64)
-    @Pattern(regexp = "^[\\p{L}0-9/ ,'-]*$")
+    @Pattern(regexp = "^[\\p{L}0-9/ ,'&-]*$")
     @NotNull
     private String label;
 
@@ -34,7 +34,7 @@ public class TransactionCategory {
      * Private constructor - New TransactionCategory object must be created through builder
      */
     private TransactionCategory() {
-
+        id = -1;
     }
 
     /**

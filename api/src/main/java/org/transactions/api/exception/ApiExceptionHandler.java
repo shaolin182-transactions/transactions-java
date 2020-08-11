@@ -17,14 +17,14 @@ import java.util.Map;
 public class ApiExceptionHandler {
 
     @ExceptionHandler(value = TransactionNotFoundException.class)
-    protected ResponseEntity<Object> handleNotFoundException(TransactionNotFoundException ex, WebRequest request){
+    protected ResponseEntity<Error> handleNotFoundException(TransactionNotFoundException ex, WebRequest request){
 
         Error error = new Error(100, "No transaction Found");
         return new ResponseEntity(error, null, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> handleValidExceptions(MethodArgumentNotValidException ex,  WebRequest request) {
+    public ResponseEntity<Error> handleValidExceptions(MethodArgumentNotValidException ex,  WebRequest request) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach(error -> {
             String fieldName = ((FieldError) error).getField();

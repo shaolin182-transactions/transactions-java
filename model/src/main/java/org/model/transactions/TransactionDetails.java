@@ -162,8 +162,8 @@ public class TransactionDetails {
         }
 
         public BankAccount.BankAccountBuilder withBankAccount() {
-            Consumer<BankAccount> callback = obj -> { instance.setBankAccount(obj);};
-            return new BankAccount.BankAccountBuilder(this, callback);
+            Consumer<BankAccount> callbackMethod = obj -> instance.setBankAccount(obj);
+            return new BankAccount.BankAccountBuilder(this, callbackMethod);
         }
 
         public TransactionDetails build() {
