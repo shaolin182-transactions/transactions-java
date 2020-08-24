@@ -4,13 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.transactions.connector.ITransactionDataSource;
 import org.model.transactions.Transaction;
+import org.transactions.connector.ITransactionsReadOnlyDatasource;
 import org.transactions.persistence.repositories.TransactionsRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Component
-public class TransactionDatasource implements ITransactionDataSource {
+public class TransactionDatasource implements ITransactionDataSource, ITransactionsReadOnlyDatasource {
 
     @Autowired
     private TransactionsRepository repository;
