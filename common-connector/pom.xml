@@ -9,28 +9,15 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>persistence-mongodb</artifactId>
-
-    <properties>
-        <sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
-    </properties>
+    <artifactId>common-connector</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.transactions</groupId>
             <artifactId>model</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>org.transactions</groupId>
-            <artifactId>common-connector</artifactId>
-        </dependency>
-
     </dependencies>
+
 
 </project>
