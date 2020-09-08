@@ -5,7 +5,10 @@ COPY . /workspace
 RUN mvn -B -f pom.xml clean package -DskipTests
 
 FROM openjdk:11-jdk
-COPY application.properties application.properties
+
+ENV TARGET_ENV=dev
+
 COPY --from=build /workspace/api/target/*.jar app.jar
+
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","/app.jar"]
+ENTRYPOINT ["java", "-DenvTarget=${TARGET_ENV}", "-jar","/app.jar"]
