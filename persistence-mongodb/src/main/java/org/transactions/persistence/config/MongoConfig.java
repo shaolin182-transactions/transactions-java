@@ -1,8 +1,15 @@
 package org.transactions.persistence.config;
 
+import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 import org.transactions.persistence.converters.DateToOffsetDateTimeConverter;
 import org.transactions.persistence.converters.OffsetDateTimeToDateConverter;
@@ -10,8 +17,19 @@ import org.transactions.persistence.converters.OffsetDateTimeToDateConverter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+
 @Configuration
-public class MongoConfig  {
+public class MongoConfig  extends AbstractMongoClientConfiguration {
+
+    @Value(("${spring.data.mongodb.database}"))
+    private String databaseName;
+
+    @Override
+    protected String getDatabaseName() {
+        return databaseName;
+    }
 
     @Bean
     public MongoCustomConversions customConversions(){
@@ -19,5 +37,17 @@ public class MongoConfig  {
         converters.add(new DateToOffsetDateTimeConverter());
         converters.add(new OffsetDateTimeToDateConverter());
         return new MongoCustomConversions(converters);
+    }
+
+    @Override
+    public MongoClient mongoClient() {
+        CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
+                fromProviders(PojoCodecProvider.builder().automatic(true).build()));
+
+        MongoClientSettings settings = MongoClientSettings.builder()
+                .codecRegistry(pojoCodecRegistry)
+                .build();
+
+        return MongoClients.create(settings);
     }
 }
