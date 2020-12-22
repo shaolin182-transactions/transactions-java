@@ -33,7 +33,7 @@ public class TransactionCategory {
     /**
      * Private constructor - New TransactionCategory object must be created through builder
      */
-    private TransactionCategory() {
+    public TransactionCategory() {
         id = -1;
     }
 
@@ -56,6 +56,22 @@ public class TransactionCategory {
 
     public TransactionCategoryType getType() {
         return type;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public void setType(TransactionCategoryType type) {
+        this.type = type;
     }
 
     @Override

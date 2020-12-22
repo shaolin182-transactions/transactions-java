@@ -89,6 +89,10 @@ public class TransactionDetails {
         this.costAbs = costAbs;
     }
 
+    public void setCategory(TransactionCategory category) {
+        this.category = category;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
