@@ -111,6 +111,14 @@
         <version>${org.apache.commons.commons-lang3.version}</version>
       </dependency>
 
+      <!-- For handling patch operation -->
+      <dependency>
+        <groupId>com.github.java-json-tools</groupId>
+        <artifactId>json-patch</artifactId>
+        <version>1.13</version>
+      </dependency>
+      <!-- END For handling patch operation -->
+
       <!-- Unit test purpose -->
       <dependency>
         <groupId>org.junit.jupiter</groupId>

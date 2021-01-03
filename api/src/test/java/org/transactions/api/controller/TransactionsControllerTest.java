@@ -22,6 +22,7 @@ import org.transactions.persistence.repositories.TransactionsRepository;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.model.transactions.TransactionCategoryType.EXTRA;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -203,6 +204,22 @@ class TransactionsControllerTest {
         mockMvc.perform(delete("/transactions/someId")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
+    }
+
+    @DisplayName("Patch Transaction - Nominal Case")
+    @Test
+    void patchTransaction() throws Exception {
+
+        MvcResult result = mockMvc.perform(patch("/transactions/someId")
+                .contentType("application/json-patch+json")
+                .content("[\n" +
+                        "  { \"op\": \"replace\", \"path\": \"/baz\", \"value\": \"boo\" },\n" +
+                        "  { \"op\": \"add\", \"path\": \"/hello\", \"value\": [\"world\"] },\n" +
+                        "  { \"op\": \"remove\", \"path\": \"/foo\" }\n" +
+                        "]"))
+                .andExpect(status().isOk()).andReturn();
+
+        Mockito.verify(service, Mockito.times(1)).patchTransaction(any(), any());
     }
 
     @DisplayName("Update Transaction - Nominal Case")

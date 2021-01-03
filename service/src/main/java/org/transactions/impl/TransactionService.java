@@ -1,7 +1,10 @@
 package org.transactions.impl;
 
-import org.apache.commons.lang3.StringUtils;
-import org.model.transactions.BankAccount;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
 import org.model.transactions.Transaction;
 import org.model.transactions.TransactionCategory;
 import org.model.transactions.TransactionDetails;
@@ -24,8 +27,12 @@ public class TransactionService implements ITransactionService {
     private ICommonDataDatasource commonDataDatasource;
 
     @Autowired
-    public TransactionService(ITransactionDataSource dataSource, ICommonDataDatasource commonDataDatasource ){
+    private ObjectMapper mapper;
+
+    @Autowired
+    public TransactionService(ITransactionDataSource dataSource, ObjectMapper mapper, ICommonDataDatasource commonDataDatasource){
         this.transactionDataSource = dataSource;
+        this.mapper = mapper;
         this.commonDataDatasource = commonDataDatasource;
     }
 
@@ -44,6 +51,28 @@ public class TransactionService implements ITransactionService {
     public Transaction saveTransaction(String id, Transaction transaction) {
 
         return createTransaction(transaction);
+    }
+
+    /**
+     * Looking for a transaction with given id and apply values from transaction object
+     * @param id : identifier of the transaction
+     * @param patchOp : operations to apply to existing transaction
+     * @return the updated transaction
+     */
+    @Override
+    public Transaction patchTransaction(String id, JsonPatch patchOp)  {
+        Transaction origin = transactionDataSource.getTransaction(id)
+                .orElseThrow(TransactionNotFoundException::new);
+
+        Transaction result = null;
+        try {
+            JsonNode patched = patchOp.apply(mapper.convertValue(origin, JsonNode.class));
+            result =  mapper.treeToValue(patched, Transaction.class);
+        } catch (JsonPatchException | JsonProcessingException e) {
+            throw new TransactionProcessException("An exception occurs while processing patch operation", e);
+        }
+
+        return transactionDataSource.saveTransactions(result);
     }
 
     @Override
