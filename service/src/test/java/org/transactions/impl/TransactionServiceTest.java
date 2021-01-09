@@ -1,16 +1,20 @@
 package org.transactions.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.JsonPatch;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.model.transactions.Transaction;
 import org.model.transactions.TransactionType;
 import org.model.transactions.builder.TransactionBuilder;
 import org.transactions.connector.ITransactionDataSource;
 import org.transactions.exception.TransactionNotFoundException;
-import org.model.transactions.Transaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +77,46 @@ class TransactionServiceTest {
         // Assertions & Run tests
         TransactionService service = new TransactionService(transactionDataSource, null, commonDataDatasource);
         assertThrows(TransactionNotFoundException.class, () -> service.getTransaction("idOfaTransaction"));
+    }
+
+    @Test
+    @DisplayName("SAVE Transaction - Nominal case")
+    void saveTransaction(@Mock ITransactionDataSource dataSource){
+        // Prepare tests
+        Transaction transaction = new TransactionBuilder().addTransactions()
+                .addTransaction().withIncome(150f).withOutcome(0f).done()
+                .done().build();
+
+        // Run test
+        TransactionService service = new TransactionService(dataSource, null);
+        TransactionService spy = Mockito.spy(service);
+
+        spy.saveTransaction("id", transaction);
+
+        Mockito.verify(spy, times(1)).createTransaction(transaction);
+    }
+
+    @Test
+    @DisplayName("PATCH Transaction - Nominal case")
+    void patchTransaction(@Mock ITransactionDataSource dataSource) throws JsonProcessingException {
+        // Prepare tests
+        Transaction transaction = new TransactionBuilder().addTransactions()
+                .addTransaction().withIncome(150f).withOutcome(0f).done()
+                .done().build();
+
+        // Run test
+        TransactionService service = new TransactionService(dataSource, new ObjectMapper());
+        TransactionService spy = Mockito.spy(service);
+
+        when(dataSource.getTransaction("id")).thenReturn(Optional.of(transaction));
+        when(dataSource.saveTransactions(any())).thenReturn(transaction);
+
+        Transaction result = spy.patchTransaction("id", new ObjectMapper().readValue("[\n" +
+                "  { \"op\": \"replace\", \"path\": \"/transactions/0/income\", \"value\": 175 }\n" +
+                "]", JsonPatch.class));
+
+        Mockito.verify(spy, times(1)).getTransaction("id");
+        Mockito.verify(spy, times(1)).createTransaction(any());
     }
 
     @Test

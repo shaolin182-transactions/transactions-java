@@ -61,8 +61,7 @@ public class TransactionService implements ITransactionService {
      */
     @Override
     public Transaction patchTransaction(String id, JsonPatch patchOp)  {
-        Transaction origin = transactionDataSource.getTransaction(id)
-                .orElseThrow(TransactionNotFoundException::new);
+        Transaction origin = getTransaction(id);
 
         Transaction result = null;
         try {
@@ -72,7 +71,9 @@ public class TransactionService implements ITransactionService {
             throw new TransactionProcessException("An exception occurs while processing patch operation", e);
         }
 
-        return transactionDataSource.saveTransactions(result);
+        // TODO : check that transaction data are correct
+
+        return createTransaction(result);
     }
 
     @Override

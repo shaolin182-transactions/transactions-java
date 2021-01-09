@@ -108,7 +108,7 @@ public class Transaction {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Transaction that = (Transaction) o;
-        return id.equals(that.id) &&
+        return Objects.equals(id, that.id) &&
                 Objects.equals(description, that.description) &&
                 Objects.equals(transactions, that.transactions) &&
                 Objects.equals(date, that.date) &&
