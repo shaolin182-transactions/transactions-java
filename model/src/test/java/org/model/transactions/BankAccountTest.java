@@ -49,6 +49,10 @@ class BankAccountTest {
      */
     private static Stream<Arguments> getBankAccountDataSet() {
         return Stream.of(
+          Arguments.of(null, null, null, 1),
+          Arguments.of(null, 1, null, 0),
+          Arguments.of("cat", 1, null, 1),
+          Arguments.of(null, 1, "label", 1),
           Arguments.of("A bank Account Category à8", 1, "A bank Account Label ë3", 0),
           Arguments.of("A bank Account Category", 1000, "A bank Account Label", 1),
           Arguments.of(random(100, true, true), 100, "A bank Account Label", 1),

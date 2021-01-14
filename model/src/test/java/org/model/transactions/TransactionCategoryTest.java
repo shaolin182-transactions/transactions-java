@@ -17,6 +17,9 @@ import java.util.stream.Stream;
 
 import static org.apache.commons.lang3.RandomStringUtils.random;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.model.transactions.TransactionCategoryType.COURANTE;
+import static org.model.transactions.TransactionCategoryType.EXTRA;
+import static org.model.transactions.TransactionCategoryType.FIXE;
 
 class TransactionCategoryTest {
 
@@ -30,11 +33,12 @@ class TransactionCategoryTest {
 
     @ParameterizedTest(name="Validation test on category - run #{index} with [{arguments}]")
     @MethodSource("getCategoryDataSet")
-    void validTransactionCategory(String category, Integer id, String label, Integer expectedError) {
+    void validTransactionCategory(String category, Integer id, String label, TransactionCategoryType type, Integer expectedError) {
         TransactionCategory transactionCategory = new TransactionCategoryBuilder()
                 .withLabel(label)
                 .withCategory(category)
                 .withId(id)
+                .withType(type)
                 .build();
 
         Set<ConstraintViolation<TransactionCategory>> constraintViolations = validator.validate(transactionCategory);
@@ -48,11 +52,13 @@ class TransactionCategoryTest {
      */
     private static Stream<Arguments> getCategoryDataSet() {
         return Stream.of(
-                Arguments.of("A category type", 1, "A category Label", 0),
-                Arguments.of("A category type with accent ad number é1 &", 2, "A category Label with accent ad number à9", 0),
-                Arguments.of("A category type", 1000, "A category Label", 1),
-                Arguments.of(random(100, true, true), 100, "A category Label", 1),
-                Arguments.of("A category type", 100, random(100, true, true), 1)
+                Arguments.of(null, null, null, null, 1),
+                Arguments.of(null, 1, null, null, 0),
+                Arguments.of("A category type", 1, "A category Label", EXTRA, 0),
+                Arguments.of("A category type with accent ad number é1 &", 2, "A category Label with accent ad number à9", EXTRA, 0),
+                Arguments.of("A category type", 1000, "A category Label", EXTRA, 1),
+                Arguments.of(random(100, true, true), 100, "A category Label", FIXE, 1),
+                Arguments.of("A category type", 100, random(100, true, true), COURANTE, 1)
         );
     }
 
