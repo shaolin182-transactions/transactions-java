@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
+import org.apache.commons.lang3.StringUtils;
+import org.model.transactions.BankAccount;
 import org.model.transactions.Transaction;
 import org.model.transactions.TransactionCategory;
 import org.model.transactions.TransactionDetails;
@@ -15,6 +17,7 @@ import org.transactions.connector.ICommonDataDatasource;
 import org.transactions.connector.ITransactionDataSource;
 import org.transactions.exception.TransactionBadDataException;
 import org.transactions.exception.TransactionNotFoundException;
+import org.transactions.exception.TransactionProcessException;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,12 +25,11 @@ import java.util.Optional;
 @Service
 public class TransactionService implements ITransactionService {
 
-    private ITransactionDataSource transactionDataSource;
+    private final ITransactionDataSource transactionDataSource;
 
-    private ICommonDataDatasource commonDataDatasource;
+    private final ICommonDataDatasource commonDataDatasource;
 
-    @Autowired
-    private ObjectMapper mapper;
+    private final ObjectMapper mapper;
 
     @Autowired
     public TransactionService(ITransactionDataSource dataSource, ObjectMapper mapper, ICommonDataDatasource commonDataDatasource){
@@ -63,7 +65,7 @@ public class TransactionService implements ITransactionService {
     public Transaction patchTransaction(String id, JsonPatch patchOp)  {
         Transaction origin = getTransaction(id);
 
-        Transaction result = null;
+        Transaction result;
         try {
             JsonNode patched = patchOp.apply(mapper.convertValue(origin, JsonNode.class));
             result =  mapper.treeToValue(patched, Transaction.class);

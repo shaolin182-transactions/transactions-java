@@ -3,6 +3,7 @@ package org.transactions.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,9 +11,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.model.transactions.BankAccount;
 import org.model.transactions.Transaction;
+import org.model.transactions.TransactionCategory;
 import org.model.transactions.TransactionType;
 import org.model.transactions.builder.TransactionBuilder;
+import org.transactions.connector.ICommonDataDatasource;
 import org.transactions.connector.ITransactionDataSource;
 import org.transactions.exception.TransactionNotFoundException;
 
@@ -23,6 +27,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
+import static org.model.transactions.TransactionCategoryType.EXTRA;
+import static org.model.transactions.TransactionCategoryType.FIXE;
 
 @ExtendWith(MockitoExtension.class)
 class TransactionServiceTest {
@@ -88,7 +94,7 @@ class TransactionServiceTest {
                 .done().build();
 
         // Run test
-        TransactionService service = new TransactionService(dataSource, null);
+        TransactionService service = new TransactionService(dataSource, null, commonDataDatasource);
         TransactionService spy = Mockito.spy(service);
 
         spy.saveTransaction("id", transaction);
@@ -105,7 +111,7 @@ class TransactionServiceTest {
                 .done().build();
 
         // Run test
-        TransactionService service = new TransactionService(dataSource, new ObjectMapper());
+        TransactionService service = new TransactionService(dataSource, new ObjectMapper(), commonDataDatasource);
         TransactionService spy = Mockito.spy(service);
 
         when(dataSource.getTransaction("id")).thenReturn(Optional.of(transaction));
@@ -176,7 +182,7 @@ class TransactionServiceTest {
         when(commonDataDatasource.findBankAccountById(1)).thenReturn(Optional.of(new BankAccount.BankAccountBuilder().withId(1).withCategory("cat").withLabel("label").build()));
 
         // Run test
-        Transaction result = new TransactionService(transactionDataSource, , null, commonDataDatasource).createTransaction(transaction);
+        Transaction result = new TransactionService(transactionDataSource, null, commonDataDatasource).createTransaction(transaction);
 
         Assertions.assertAll(
                 () -> Assertions.assertEquals(1, result.getTransactions().get(0).getBankAccount().getId(), "Error on bank account data")  ,
