@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class TransactionDatasource implements ITransactionDataSource, ITransactionsReadOnlyDatasource {
+public class TransactionDatasource implements ITransactionDataSource, ITransactionsReadOnlyDatasource{
 
     @Autowired
     private TransactionsRepository repository;
@@ -35,4 +35,6 @@ public class TransactionDatasource implements ITransactionDataSource, ITransacti
     public Transaction saveTransactions(Transaction aTransaction) {
         return repository.save(aTransaction);
     }
+
+
 }

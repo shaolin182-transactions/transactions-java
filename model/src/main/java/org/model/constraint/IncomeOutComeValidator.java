@@ -11,7 +11,7 @@ import javax.validation.ConstraintValidatorContext;
 public class IncomeOutComeValidator implements ConstraintValidator<ValidIncomeOutcome, TransactionDetails> {
     @Override
     public void initialize(ValidIncomeOutcome constraintAnnotation) {
-
+        // No initialization needed for that validator
     }
 
     @Override

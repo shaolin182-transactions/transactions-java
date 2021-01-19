@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.model.error.Error;
+import org.model.transactions.Transaction;
 import org.model.transactions.builder.TransactionBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -16,14 +17,17 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.transactions.ITransactionService;
 import org.transactions.connector.ITransactionDataSource;
 import org.transactions.exception.TransactionNotFoundException;
-import org.model.transactions.Transaction;
 import org.transactions.persistence.repositories.TransactionsRepository;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.model.transactions.TransactionCategoryType.EXTRA;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -107,7 +111,7 @@ class TransactionsControllerTest {
         Transaction expectedTransaction = new TransactionBuilder()
                 .addTransactions()
                     .addTransaction()
-                        .withCategory().withId(1).withCategory("aCategory").withLabel("aLabel").done()
+                        .withCategory().withId(1).withCategory("aCategory").withLabel("aLabel").withType(EXTRA).done()
                         .withBankAccount().withCategory("aCategory").withId(1).withLabel("aLabel").done()
                         .withIncome(0f).withOutcome(123.5f).done()
                 .done()
@@ -136,7 +140,7 @@ class TransactionsControllerTest {
                 "{" +
                 "\"bankAccount\": {\"id\": 1, \"category\": \"aCategory\", \"label\": \"aLabel\"}," +
                 "\"income\": 0, \"outcome\": 123.5, \"description\": \"Some description\"," +
-                "\"category\":  {\"id\": 1, \"category\": \"aCategory\", \"label\": \"aLabel\"}" +
+                "\"category\":  {\"id\": 1, \"category\": \"aCategory\", \"label\": \"aLabel\", \"type\" : \"EXTRA\"}" +
                 "}" +
                 "]" +
                 "}";
@@ -208,7 +212,7 @@ class TransactionsControllerTest {
         Transaction expectedTransaction = new TransactionBuilder()
                 .addTransactions()
                     .addTransaction()
-                        .withCategory().withId(1).withCategory("aCategory").withLabel("aLabel").done()
+                        .withCategory().withId(1).withCategory("aCategory").withLabel("aLabel").withType(EXTRA).done()
                         .withBankAccount().withCategory("aCategory").withId(1).withLabel("aLabel").done()
                         .withIncome(0f).withOutcome(123.5f).done()
                         .done()
