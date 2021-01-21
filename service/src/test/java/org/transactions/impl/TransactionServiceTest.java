@@ -16,10 +16,17 @@ import org.model.transactions.Transaction;
 import org.model.transactions.TransactionCategory;
 import org.model.transactions.TransactionType;
 import org.model.transactions.builder.TransactionBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.transactions.configuration.JacksonConfiguration;
 import org.transactions.connector.ICommonDataDatasource;
 import org.transactions.connector.ITransactionDataSource;
+import org.transactions.exception.TransactionBadDataException;
 import org.transactions.exception.TransactionNotFoundException;
+import org.transactions.exception.TransactionProcessException;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +38,8 @@ import static org.model.transactions.TransactionCategoryType.EXTRA;
 import static org.model.transactions.TransactionCategoryType.FIXE;
 
 @ExtendWith(MockitoExtension.class)
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {JacksonConfiguration.class})
 class TransactionServiceTest {
 
     @Mock
@@ -38,6 +47,9 @@ class TransactionServiceTest {
 
     @Mock
     private ICommonDataDatasource commonDataDatasource;
+
+    @Autowired
+    private ObjectMapper mapper;
 
     @AfterEach
     private void reset() {
@@ -87,14 +99,14 @@ class TransactionServiceTest {
 
     @Test
     @DisplayName("SAVE Transaction - Nominal case")
-    void saveTransaction(@Mock ITransactionDataSource dataSource){
+    void saveTransaction(){
         // Prepare tests
         Transaction transaction = new TransactionBuilder().addTransactions()
                 .addTransaction().withIncome(150f).withOutcome(0f).done()
                 .done().build();
 
         // Run test
-        TransactionService service = new TransactionService(dataSource, null, commonDataDatasource);
+        TransactionService service = new TransactionService(transactionDataSource, null, commonDataDatasource);
         TransactionService spy = Mockito.spy(service);
 
         spy.saveTransaction("id", transaction);
@@ -104,18 +116,18 @@ class TransactionServiceTest {
 
     @Test
     @DisplayName("PATCH Transaction - Nominal case")
-    void patchTransaction(@Mock ITransactionDataSource dataSource) throws JsonProcessingException {
+    void patchTransaction() throws JsonProcessingException {
         // Prepare tests
-        Transaction transaction = new TransactionBuilder().addTransactions()
-                .addTransaction().withIncome(150f).withOutcome(0f).done()
+        Transaction transaction = new TransactionBuilder().withId("1").withDate(OffsetDateTime.now()).addTransactions()
+                .addTransaction().withIncome(150f).withOutcome(0f).withBankAccount().withId(1).withCategory("cat").withLabel("label").done().done()
                 .done().build();
 
         // Run test
-        TransactionService service = new TransactionService(dataSource, new ObjectMapper(), commonDataDatasource);
+        TransactionService service = new TransactionService(transactionDataSource, mapper, commonDataDatasource);
         TransactionService spy = Mockito.spy(service);
 
-        when(dataSource.getTransaction("id")).thenReturn(Optional.of(transaction));
-        when(dataSource.saveTransactions(any())).thenReturn(transaction);
+        when(transactionDataSource.getTransaction("id")).thenReturn(Optional.of(transaction));
+        when(transactionDataSource.saveTransactions(any())).thenReturn(transaction);
 
         Transaction result = spy.patchTransaction("id", new ObjectMapper().readValue("[\n" +
                 "  { \"op\": \"replace\", \"path\": \"/transactions/0/income\", \"value\": 175 }\n" +
@@ -123,6 +135,51 @@ class TransactionServiceTest {
 
         Mockito.verify(spy, times(1)).getTransaction("id");
         Mockito.verify(spy, times(1)).createTransaction(any());
+    }
+
+    @Test
+    @DisplayName("PATCH Transaction - Invalid data")
+    void patchTransactionWithInvalidData() throws JsonProcessingException {
+        // Prepare tests
+        Transaction transaction = new TransactionBuilder().withId("1").withDate(OffsetDateTime.now()).addTransactions()
+                .addTransaction().withIncome(150f).withOutcome(0f).withBankAccount().withId(1).withCategory("cat").withLabel("label").done().done()
+                .done().build();
+
+        // Run test
+        TransactionService service = new TransactionService(transactionDataSource, mapper, commonDataDatasource);
+        TransactionService spy = Mockito.spy(service);
+
+        when(transactionDataSource.getTransaction("id")).thenReturn(Optional.of(transaction));
+        when(transactionDataSource.saveTransactions(any())).thenReturn(transaction);
+
+        Assertions.assertThrows(TransactionBadDataException.class, () -> spy.patchTransaction("id", new ObjectMapper().readValue("[\n" +
+                "  { \"op\": \"add\", \"path\": \"/transactions/0/outcome\", \"value\": 15 }\n" +
+                "]", JsonPatch.class)));
+
+        Mockito.verify(spy, times(1)).getTransaction("id");
+        Mockito.verify(spy, times(0)).createTransaction(any());
+    }
+
+    @Test
+    @DisplayName("PATCH Transaction - Exception")
+    void patchTransactionException() throws JsonProcessingException {
+        // Prepare tests
+        Transaction transaction = new TransactionBuilder().addTransactions()
+                .addTransaction().withIncome(150f).withOutcome(0f).done()
+                .done().build();
+
+        // Run test
+        TransactionService service = new TransactionService(transactionDataSource, mapper, commonDataDatasource);
+        TransactionService spy = Mockito.spy(service);
+
+        when(transactionDataSource.getTransaction("id")).thenReturn(Optional.of(transaction));
+
+        Assertions.assertThrows(TransactionProcessException.class, () -> spy.patchTransaction("id", new ObjectMapper().readValue("[\n" +
+                "  { \"op\": \"add\", \"path\": \"/transactions/10/income\", \"value\": 175 }\n" +
+                "]", JsonPatch.class)));
+
+        Mockito.verify(spy, times(1)).getTransaction("id");
+        Mockito.verify(spy, times(0)).createTransaction(any());
     }
 
     @Test
