@@ -1,5 +1,6 @@
 package org.transactions;
 
+import com.github.fge.jsonpatch.JsonPatch;
 import org.model.transactions.Transaction;
 
 import java.util.List;
@@ -15,6 +16,8 @@ public interface ITransactionService {
     Transaction getTransaction(String id);
 
     Transaction saveTransaction(String id, Transaction transaction);
+
+    Transaction patchTransaction(String id, JsonPatch transaction);
 
     Transaction createTransaction(Transaction transaction);
 

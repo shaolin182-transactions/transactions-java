@@ -1,15 +1,10 @@
 package org.transactions.api.controller;
 
+import com.github.fge.jsonpatch.JsonPatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.transactions.ITransactionService;
 import org.model.transactions.Transaction;
 
@@ -60,6 +55,16 @@ public class TransactionsController {
     @PutMapping(value = "/transactions/{id}", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<Transaction> updateTransaction(@PathVariable String id, @Valid @RequestBody Transaction transaction) {
         Transaction result = service.saveTransaction(id, transaction);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
+     * Patch a transaction with id given in parameter
+     * @return transaction updated
+     */
+    @PatchMapping(value = "/transactions/{id}", produces = APPLICATION_JSON_VALUE, consumes = "application/json-patch+json")
+    public ResponseEntity<Transaction> patchTransaction(@PathVariable String id, @RequestBody JsonPatch patchOp) {
+        Transaction result = service.patchTransaction(id, patchOp);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
