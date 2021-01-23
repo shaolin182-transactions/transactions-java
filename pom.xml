@@ -168,6 +168,7 @@
         <groupId>de.flapdoodle.embed</groupId>
         <artifactId>de.flapdoodle.embed.mongo</artifactId>
         <version>${de.flapdoodle.embed.mongo.version}</version>
+        <scope>test</scope>
       </dependency>
       <!-- End Unit test purpose -->
     </dependencies>
