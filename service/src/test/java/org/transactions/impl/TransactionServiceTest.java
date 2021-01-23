@@ -1,5 +1,8 @@
 package org.transactions.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.JsonPatch;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -13,24 +16,30 @@ import org.model.transactions.Transaction;
 import org.model.transactions.TransactionCategory;
 import org.model.transactions.TransactionType;
 import org.model.transactions.builder.TransactionBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.transactions.configuration.JacksonConfiguration;
 import org.transactions.connector.ICommonDataDatasource;
 import org.transactions.connector.ITransactionDataSource;
+import org.transactions.exception.TransactionBadDataException;
 import org.transactions.exception.TransactionNotFoundException;
+import org.transactions.exception.TransactionProcessException;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.model.transactions.TransactionCategoryType.EXTRA;
 import static org.model.transactions.TransactionCategoryType.FIXE;
 
 @ExtendWith(MockitoExtension.class)
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {JacksonConfiguration.class})
 class TransactionServiceTest {
 
     @Mock
@@ -38,6 +47,9 @@ class TransactionServiceTest {
 
     @Mock
     private ICommonDataDatasource commonDataDatasource;
+
+    @Autowired
+    private ObjectMapper mapper;
 
     @AfterEach
     private void reset() {
@@ -51,7 +63,7 @@ class TransactionServiceTest {
         when(transactionDataSource.getAllTransactions()).thenReturn(new ArrayList<Transaction>());
 
         // Run method to test
-        List<Transaction> result = new TransactionService(transactionDataSource, commonDataDatasource).getAllTransactions();
+        List<Transaction> result = new TransactionService(transactionDataSource, null, commonDataDatasource).getAllTransactions();
 
         // Assertions
         verify(transactionDataSource, times(1)).getAllTransactions();
@@ -67,7 +79,7 @@ class TransactionServiceTest {
         when(transactionDataSource.getTransaction(anyString())).thenReturn(opt);
 
         // Run Tests
-        Transaction result = new TransactionService(transactionDataSource, commonDataDatasource).getTransaction("IdForTest");
+        Transaction result = new TransactionService(transactionDataSource, null, commonDataDatasource).getTransaction("IdForTest");
 
         // Assertions
         assertEquals(transaction, result, "Wrong transaction retrieved");
@@ -81,8 +93,93 @@ class TransactionServiceTest {
         when(transactionDataSource.getTransaction(anyString())).thenReturn(Optional.empty());
 
         // Assertions & Run tests
-        TransactionService service = new TransactionService(transactionDataSource, commonDataDatasource);
+        TransactionService service = new TransactionService(transactionDataSource, null, commonDataDatasource);
         assertThrows(TransactionNotFoundException.class, () -> service.getTransaction("idOfaTransaction"));
+    }
+
+    @Test
+    @DisplayName("SAVE Transaction - Nominal case")
+    void saveTransaction(){
+        // Prepare tests
+        Transaction transaction = new TransactionBuilder().addTransactions()
+                .addTransaction().withIncome(150f).withOutcome(0f).done()
+                .done().build();
+
+        // Run test
+        TransactionService service = new TransactionService(transactionDataSource, null, commonDataDatasource);
+        TransactionService spy = Mockito.spy(service);
+
+        spy.saveTransaction("id", transaction);
+
+        Mockito.verify(spy, times(1)).createTransaction(transaction);
+    }
+
+    @Test
+    @DisplayName("PATCH Transaction - Nominal case")
+    void patchTransaction() throws JsonProcessingException {
+        // Prepare tests
+        Transaction transaction = new TransactionBuilder().withId("1").withDate(OffsetDateTime.now()).addTransactions()
+                .addTransaction().withIncome(150f).withOutcome(0f).withBankAccount().withId(1).withCategory("cat").withLabel("label").done().done()
+                .done().build();
+
+        // Run test
+        TransactionService service = new TransactionService(transactionDataSource, mapper, commonDataDatasource);
+        TransactionService spy = Mockito.spy(service);
+
+        when(transactionDataSource.getTransaction("id")).thenReturn(Optional.of(transaction));
+        when(transactionDataSource.saveTransactions(any())).thenReturn(transaction);
+
+        Transaction result = spy.patchTransaction("id", new ObjectMapper().readValue("[\n" +
+                "  { \"op\": \"replace\", \"path\": \"/transactions/0/income\", \"value\": 175 }\n" +
+                "]", JsonPatch.class));
+
+        Mockito.verify(spy, times(1)).getTransaction("id");
+        Mockito.verify(spy, times(1)).createTransaction(any());
+    }
+
+    @Test
+    @DisplayName("PATCH Transaction - Invalid data")
+    void patchTransactionWithInvalidData() throws JsonProcessingException {
+        // Prepare tests
+        Transaction transaction = new TransactionBuilder().withId("1").withDate(OffsetDateTime.now()).addTransactions()
+                .addTransaction().withIncome(150f).withOutcome(0f).withBankAccount().withId(1).withCategory("cat").withLabel("label").done().done()
+                .done().build();
+
+        // Run test
+        TransactionService service = new TransactionService(transactionDataSource, mapper, commonDataDatasource);
+        TransactionService spy = Mockito.spy(service);
+
+        when(transactionDataSource.getTransaction("id")).thenReturn(Optional.of(transaction));
+        when(transactionDataSource.saveTransactions(any())).thenReturn(transaction);
+
+        Assertions.assertThrows(TransactionBadDataException.class, () -> spy.patchTransaction("id", new ObjectMapper().readValue("[\n" +
+                "  { \"op\": \"add\", \"path\": \"/transactions/0/outcome\", \"value\": 15 }\n" +
+                "]", JsonPatch.class)));
+
+        Mockito.verify(spy, times(1)).getTransaction("id");
+        Mockito.verify(spy, times(0)).createTransaction(any());
+    }
+
+    @Test
+    @DisplayName("PATCH Transaction - Exception")
+    void patchTransactionException() throws JsonProcessingException {
+        // Prepare tests
+        Transaction transaction = new TransactionBuilder().addTransactions()
+                .addTransaction().withIncome(150f).withOutcome(0f).done()
+                .done().build();
+
+        // Run test
+        TransactionService service = new TransactionService(transactionDataSource, mapper, commonDataDatasource);
+        TransactionService spy = Mockito.spy(service);
+
+        when(transactionDataSource.getTransaction("id")).thenReturn(Optional.of(transaction));
+
+        Assertions.assertThrows(TransactionProcessException.class, () -> spy.patchTransaction("id", new ObjectMapper().readValue("[\n" +
+                "  { \"op\": \"add\", \"path\": \"/transactions/10/income\", \"value\": 175 }\n" +
+                "]", JsonPatch.class)));
+
+        Mockito.verify(spy, times(1)).getTransaction("id");
+        Mockito.verify(spy, times(0)).createTransaction(any());
     }
 
     @Test
@@ -98,7 +195,7 @@ class TransactionServiceTest {
         when(transactionDataSource.saveTransactions(transaction)).thenReturn(transaction);
 
         // Run test
-        Transaction result = new TransactionService(transactionDataSource, commonDataDatasource).createTransaction(transaction);
+        Transaction result = new TransactionService(transactionDataSource, null, commonDataDatasource).createTransaction(transaction);
 
         Assertions.assertEquals(1813l, result.getCost(), "Error on cost computation");
         Assertions.assertEquals(1813l, result.getCostAbs(), "Error on cost computation");
@@ -119,7 +216,7 @@ class TransactionServiceTest {
         when(transactionDataSource.saveTransactions(transaction)).thenReturn(transaction);
 
         // Run test
-        Transaction result = new TransactionService(transactionDataSource, commonDataDatasource).createTransaction(transaction);
+        Transaction result = new TransactionService(transactionDataSource, null, commonDataDatasource).createTransaction(transaction);
 
         Assertions.assertEquals(-14526l, result.getCost(), "Error on cost computation");
         Assertions.assertEquals(14526l, result.getCostAbs(), "Error on cost computation");
@@ -142,7 +239,7 @@ class TransactionServiceTest {
         when(commonDataDatasource.findBankAccountById(1)).thenReturn(Optional.of(new BankAccount.BankAccountBuilder().withId(1).withCategory("cat").withLabel("label").build()));
 
         // Run test
-        Transaction result = new TransactionService(transactionDataSource, commonDataDatasource).createTransaction(transaction);
+        Transaction result = new TransactionService(transactionDataSource, null, commonDataDatasource).createTransaction(transaction);
 
         Assertions.assertAll(
                 () -> Assertions.assertEquals(1, result.getTransactions().get(0).getBankAccount().getId(), "Error on bank account data")  ,
@@ -161,7 +258,7 @@ class TransactionServiceTest {
     void deleteTransaction() {
 
         // Run tests
-        new TransactionService(transactionDataSource, commonDataDatasource).deleteTransaction("someId");
+        new TransactionService(transactionDataSource, null, commonDataDatasource).deleteTransaction("someId");
 
         // Assertions
         verify(transactionDataSource, times(1)).deleteTransactions("someId");

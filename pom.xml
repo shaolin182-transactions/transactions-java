@@ -111,6 +111,22 @@
         <version>${org.apache.commons.commons-lang3.version}</version>
       </dependency>
 
+      <!-- For handling patch operation -->
+      <dependency>
+        <groupId>com.github.java-json-tools</groupId>
+        <artifactId>json-patch</artifactId>
+        <version>1.13</version>
+      </dependency>
+      <!-- END For handling patch operation -->
+
+      <!-- For handling offsetdatetime serialization feature -->
+      <dependency>
+        <groupId>com.fasterxml.jackson.datatype</groupId>
+        <artifactId>jackson-datatype-jsr310</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <!--  End Datetime -->
+
       <!-- Unit test purpose -->
       <dependency>
         <groupId>org.junit.jupiter</groupId>
@@ -152,6 +168,7 @@
         <groupId>de.flapdoodle.embed</groupId>
         <artifactId>de.flapdoodle.embed.mongo</artifactId>
         <version>${de.flapdoodle.embed.mongo.version}</version>
+        <scope>test</scope>
       </dependency>
       <!-- End Unit test purpose -->
     </dependencies>
