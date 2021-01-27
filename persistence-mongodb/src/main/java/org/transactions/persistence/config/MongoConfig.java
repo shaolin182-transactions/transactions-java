@@ -1,5 +1,6 @@
 package org.transactions.persistence.config;
 
+import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -23,8 +24,14 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 @Configuration
 public class MongoConfig  extends AbstractMongoClientConfiguration {
 
-    @Value(("${spring.data.mongodb.database}"))
+    @Value("${spring.data.mongodb.database}")
     private String databaseName;
+
+    @Value("${spring.data.mongodb.host}")
+    private String databaseHost;
+
+    @Value("${spring.data.mongodb.port}")
+    private String databasePort;
 
     @Override
     protected String getDatabaseName() {
@@ -44,8 +51,11 @@ public class MongoConfig  extends AbstractMongoClientConfiguration {
         CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
                 fromProviders(PojoCodecProvider.builder().automatic(true).build()));
 
+        ConnectionString dbUrl = new ConnectionString("mongodb://" + databaseHost + ":" + databasePort);
+
         MongoClientSettings settings = MongoClientSettings.builder()
                 .codecRegistry(pojoCodecRegistry)
+                .applyConnectionString(dbUrl)
                 .build();
 
         return MongoClients.create(settings);
