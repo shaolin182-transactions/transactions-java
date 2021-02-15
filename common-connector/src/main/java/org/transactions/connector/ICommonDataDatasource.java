@@ -10,4 +10,6 @@ public interface ICommonDataDatasource {
     Optional<TransactionCategory> findCategoryById(Integer id);
 
     Optional<BankAccount> findBankAccountById(Integer id);
+
+    void refresh();
 }

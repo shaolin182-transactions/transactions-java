@@ -48,6 +48,15 @@ public class CommonDataDatasource implements ICommonDataDatasource {
                 .findFirst();
     }
 
+    /**
+     * Refresh common data
+     */
+    @Override
+    public void refresh() {
+        getAllBankAccount();
+        getAllCategories();
+    }
+
     private void getAllCategories() {
         categories = mongoTemplate.getCollection("transaction")
                 .distinct("transactions.category", TransactionCategory.class)

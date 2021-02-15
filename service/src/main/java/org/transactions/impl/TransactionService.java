@@ -12,6 +12,7 @@ import org.model.transactions.TransactionCategory;
 import org.model.transactions.TransactionDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.transactions.ITransactionService;
 import org.transactions.ITransactionValidator;
 import org.transactions.connector.ICommonDataDatasource;
@@ -92,7 +93,41 @@ public class TransactionService implements ITransactionService {
         transaction.getTransactions().forEach(TransactionDetails::computeDynamicFields);
 
         // Persist in database
-        return transactionDataSource.saveTransactions(transaction);
+        Transaction savedTransaction = transactionDataSource.saveTransactions(transaction);
+
+        // Reload common data if needed (new category or bank account added)
+        refreshCommonData(savedTransaction);
+
+        return savedTransaction;
+    }
+
+    /**
+     * Call refresh process if saved data (bk and category) does not exist in common data
+     * @param savedTransaction : new transaction
+     */
+    private void refreshCommonData(Transaction savedTransaction) {
+
+        Boolean doRefresh = false;
+
+        if (savedTransaction == null || CollectionUtils.isEmpty(savedTransaction.getTransactions())){
+            return;
+        }
+
+        for (TransactionDetails item : savedTransaction.getTransactions()) {
+            if (item.getBankAccount() != null){
+                doRefresh = commonDataDatasource.findBankAccountById(item.getBankAccount().getId()).isEmpty() ? true : doRefresh;
+            }
+
+            if (item.getCategory() != null) {
+                doRefresh = commonDataDatasource.findCategoryById(item.getCategory().getId()).isEmpty() ? true : doRefresh;
+            }
+
+            if (doRefresh) break;
+        }
+
+        if (doRefresh) {
+            commonDataDatasource.refresh();
+        }
     }
 
     @Override
