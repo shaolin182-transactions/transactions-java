@@ -45,12 +45,12 @@ public class TransactionValidator implements ITransactionValidator {
      * @param transactionDetails : current transaction
      */
     private void validSubTransaction(TransactionDetails transactionDetails) {
-        if (transactionDetails.getBankAccount() != null){
+        if (transactionDetails.getBankAccount() != null && transactionDetails.getBankAccount().getCategory() != null){
             commonDatasource.findBankAccountById(transactionDetails.getBankAccount().getId())
                     .ifPresent(data -> checkEqualityObject(data, transactionDetails.getBankAccount()));
         }
 
-        if (transactionDetails.getCategory() != null){
+        if (transactionDetails.getCategory() != null && transactionDetails.getCategory().getCategory() != null){
             commonDatasource.findCategoryById(transactionDetails.getCategory().getId())
                     .ifPresent(data -> checkEqualityObject(data, transactionDetails.getCategory()));
         }
