@@ -14,19 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.transactions.ITransactionService;
+import org.transactions.ITransactionValidator;
 import org.transactions.connector.ICommonDataDatasource;
 import org.transactions.connector.ITransactionDataSource;
 import org.transactions.exception.TransactionBadDataException;
 import org.transactions.exception.TransactionNotFoundException;
 import org.transactions.exception.TransactionProcessException;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class TransactionService implements ITransactionService {
@@ -37,11 +33,14 @@ public class TransactionService implements ITransactionService {
 
     private final ObjectMapper mapper;
 
+    private final ITransactionValidator transactionValidator;
+
     @Autowired
-    public TransactionService(ITransactionDataSource dataSource, ObjectMapper mapper, ICommonDataDatasource commonDataDatasource){
+    public TransactionService(ITransactionDataSource dataSource, ObjectMapper mapper, ICommonDataDatasource commonDataDatasource, ITransactionValidator transactionValidator){
         this.transactionDataSource = dataSource;
         this.mapper = mapper;
         this.commonDataDatasource = commonDataDatasource;
+        this.transactionValidator = transactionValidator;
     }
 
     @Override
@@ -57,7 +56,6 @@ public class TransactionService implements ITransactionService {
 
     @Override
     public Transaction saveTransaction(String id, Transaction transaction) {
-
         return createTransaction(transaction);
     }
 
@@ -79,19 +77,13 @@ public class TransactionService implements ITransactionService {
             throw new TransactionProcessException("An exception occurs while processing patch operation", e);
         }
 
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-        Set<ConstraintViolation<Transaction>> errors =  validator.validate(result);
-
-        if (!CollectionUtils.isEmpty(errors)){
-            throw new TransactionBadDataException();
-        }
-
         return createTransaction(result);
     }
 
     @Override
     public Transaction createTransaction(Transaction transaction) {
+
+        transactionValidator.validate(transaction);
 
         // Handle incomplete category and bankAccount
         transaction.getTransactions().forEach(this::completeInformation);
@@ -101,7 +93,41 @@ public class TransactionService implements ITransactionService {
         transaction.getTransactions().forEach(TransactionDetails::computeDynamicFields);
 
         // Persist in database
-        return transactionDataSource.saveTransactions(transaction);
+        Transaction savedTransaction = transactionDataSource.saveTransactions(transaction);
+
+        // Reload common data if needed (new category or bank account added)
+        refreshCommonData(savedTransaction);
+
+        return savedTransaction;
+    }
+
+    /**
+     * Call refresh process if saved data (bk and category) does not exist in common data
+     * @param savedTransaction : new transaction
+     */
+    private void refreshCommonData(Transaction savedTransaction) {
+
+        Boolean doRefresh = false;
+
+        if (savedTransaction == null || CollectionUtils.isEmpty(savedTransaction.getTransactions())){
+            return;
+        }
+
+        for (TransactionDetails item : savedTransaction.getTransactions()) {
+            if (item.getBankAccount() != null){
+                doRefresh = commonDataDatasource.findBankAccountById(item.getBankAccount().getId()).isEmpty() ? true : doRefresh;
+            }
+
+            if (item.getCategory() != null) {
+                doRefresh = commonDataDatasource.findCategoryById(item.getCategory().getId()).isEmpty() ? true : doRefresh;
+            }
+
+            if (doRefresh) break;
+        }
+
+        if (doRefresh) {
+            commonDataDatasource.refresh();
+        }
     }
 
     @Override
