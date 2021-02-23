@@ -24,14 +24,15 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 @Configuration
 public class MongoConfig  extends AbstractMongoClientConfiguration {
 
-    @Value("${spring.data.mongodb.database}")
+    @Value("${database}")
     private String databaseName;
 
-    @Value("${spring.data.mongodb.host}")
+    @Value("${host}")
     private String databaseHost;
 
-    @Value("${spring.data.mongodb.port}")
+    @Value("${port}")
     private String databasePort;
+
 
     @Override
     protected String getDatabaseName() {
