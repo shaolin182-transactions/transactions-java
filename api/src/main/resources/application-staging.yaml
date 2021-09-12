@@ -8,6 +8,7 @@ spring:
       host: transactions-mongo-db
       port: 27017
       database: transactions-staging
+      uri: mongodb://transactions-mongo-db:27017/transactions-staging
 
 server:
   port: 8080
