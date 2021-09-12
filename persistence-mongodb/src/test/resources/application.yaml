@@ -4,3 +4,4 @@ spring:
       host: localhost
       port: 27017
       database: transactions-dev
+      uri: mongodb://localhost:27017/transactions-dev
