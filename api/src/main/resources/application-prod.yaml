@@ -8,6 +8,7 @@ spring:
       host: transactions-mongo-db
       port: 27017
       database: transactions
+      uri: mongodb://transactions-mongo-db:27017/transactions
 
 server:
   port: 8080

@@ -2,5 +2,17 @@ spring:
   jackson:
     deserialization:
       FAIL_ON_UNKNOWN_PROPERTIES: true
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8082/auth/realms/transactions
+          jwk-set-uri: http://localhost:8082/auth/realms/transactions/protocol/openid-connect/certs
+
 server:
   port: 8080
+
+logging:
+  level:
+    root: DEBUG

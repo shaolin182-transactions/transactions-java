@@ -33,6 +33,9 @@ public class MongoConfig  extends AbstractMongoClientConfiguration {
     @Value("${port}")
     private String databasePort;
 
+    @Value("${uri}")
+    private String databaseUri;
+
 
     @Override
     protected String getDatabaseName() {
@@ -52,7 +55,7 @@ public class MongoConfig  extends AbstractMongoClientConfiguration {
         CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
                 fromProviders(PojoCodecProvider.builder().automatic(true).build()));
 
-        ConnectionString dbUrl = new ConnectionString("mongodb://" + databaseHost + ":" + databasePort);
+        ConnectionString dbUrl = new ConnectionString(databaseUri);
 
         MongoClientSettings settings = MongoClientSettings.builder()
                 .codecRegistry(pojoCodecRegistry)
