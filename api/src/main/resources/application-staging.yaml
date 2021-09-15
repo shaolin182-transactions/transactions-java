@@ -10,5 +10,12 @@ spring:
       database: transactions-staging
       uri: mongodb://transactions-mongo-db:27017/transactions-staging
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8082/auth/realms/transactions
+          jwk-set-uri: http://keycloak:8082/auth/realms/transactions/protocol/openid-connect/certs
+
 server:
   port: 8080

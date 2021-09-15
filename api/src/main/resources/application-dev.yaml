@@ -10,5 +10,12 @@ spring:
       database: transactions-dev
       uri: mongodb://localhost:27017/transactions-dev
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8082/auth/realms/transactions
+          jwk-set-uri: http://localhost:8082/auth/realms/transactions/protocol/openid-connect/certs
+
 server:
   port: 8080
