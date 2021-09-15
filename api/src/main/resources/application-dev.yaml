@@ -1,0 +1,14 @@
+spring:
+  jackson:
+    deserialization:
+      FAIL_ON_UNKNOWN_PROPERTIES: true
+
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: transactions-dev
+      uri: mongodb://localhost:27017/transactions-dev
+
+server:
+  port: 8080

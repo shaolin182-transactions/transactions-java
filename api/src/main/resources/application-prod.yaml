@@ -1,0 +1,14 @@
+spring:
+  jackson:
+    deserialization:
+      FAIL_ON_UNKNOWN_PROPERTIES: true
+
+  data:
+    mongodb:
+      host: transactions-mongo-db
+      port: 27017
+      database: transactions
+      uri: mongodb://transactions-mongo-db:27017/transactions
+
+server:
+  port: 8080
