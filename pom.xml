@@ -6,7 +6,7 @@
 
   <groupId>org.transactions</groupId>
   <artifactId>transactions-java-server</artifactId>
-  <version>1.3.2-SNAPSHOT</version>
+  <version>1.3.8-SNAPSHOT</version>
 
   <parent>
     <groupId>org.springframework.boot</groupId>
@@ -41,6 +41,7 @@
     <org.glassfish.jakarta.el.version>3.0.3</org.glassfish.jakarta.el.version>
     <org.apache.commons.commons-lang3.version>3.10</org.apache.commons.commons-lang3.version>
     <de.flapdoodle.embed.mongo.version>2.2.0</de.flapdoodle.embed.mongo.version>
+    <spring-cloud-version>Hoxton.SR12</spring-cloud-version>
     <!-- END dependencies versions -->
 
     <!-- Plugins versions-->
@@ -68,6 +69,14 @@
 
   <dependencyManagement>
     <dependencies>
+
+        <dependency>
+          <groupId>org.springframework.cloud</groupId>
+          <artifactId>spring-cloud-dependencies</artifactId>
+          <version>${spring-cloud-version}</version>
+          <type>pom</type>
+          <scope>import</scope>
+        </dependency>
 
       <dependency>
         <groupId>org.transactions</groupId>
