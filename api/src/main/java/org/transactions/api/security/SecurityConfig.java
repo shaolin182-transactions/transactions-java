@@ -1,11 +1,13 @@
 package org.transactions.api.security;
 
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
-@EnableWebSecurity
+@Configuration
+@Profile("!dev")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String SCOPE_READER = "SCOPE_reader";
