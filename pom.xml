@@ -275,7 +275,7 @@
     <repository>
       <id>github</id>
       <name>GitHub Transactions</name>
-      <url>https://maven.pkg.github.com/shaolin182/transactions-java</url>
+      <url>https://maven.pkg.github.com/shaolin182-transactions/transactions-java</url>
     </repository>
   </distributionManagement>
 </project>
