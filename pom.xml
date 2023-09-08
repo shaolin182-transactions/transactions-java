@@ -60,7 +60,7 @@
 
     <!-- SONAR Properties -->
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-    <sonar.organization>shaolin182</sonar.organization>
+    <sonar.organization>shaolin182-transactions</sonar.organization>
     <sonar.coverage.jacoco.xmlReportPaths>sonar-report/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     <aggregate.report.dir>sonar-report/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
     <!-- END SONAR Properties -->
@@ -275,7 +275,7 @@
     <repository>
       <id>github</id>
       <name>GitHub Transactions</name>
-      <url>https://maven.pkg.github.com/shaolin182/transactions-java</url>
+      <url>https://maven.pkg.github.com/shaolin182-transactions/transactions-java</url>
     </repository>
   </distributionManagement>
 </project>
