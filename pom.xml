@@ -61,7 +61,6 @@
     <!-- SONAR Properties -->
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.organization>shaolin182-transactions</sonar.organization>
-    <sonar.projectKey>shaolin182-transactions_transactions-java</sonar.projectKey>
     <sonar.coverage.jacoco.xmlReportPaths>sonar-report/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     <aggregate.report.dir>sonar-report/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
     <!-- END SONAR Properties -->
