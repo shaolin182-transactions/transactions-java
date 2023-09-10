@@ -1,14 +1,18 @@
 package org.transactions.api.security;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @Profile("!dev")
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+@EnableWebSecurity
+public class SecurityConfig {
 
     private static final String SCOPE_READER = "SCOPE_reader";
 
@@ -16,20 +20,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String SCOPE_ADMIN = "SCOPE_admin";
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.cors()
-                .and()
-                    .authorizeRequests()
-                        .antMatchers(HttpMethod.GET).hasAnyAuthority(SCOPE_WRITER, SCOPE_READER, SCOPE_ADMIN)
-                        .antMatchers(HttpMethod.POST).hasAnyAuthority(SCOPE_WRITER, SCOPE_ADMIN)
-                        .antMatchers(HttpMethod.DELETE).hasAnyAuthority(SCOPE_WRITER, SCOPE_ADMIN)
-                        .antMatchers(HttpMethod.PUT).hasAnyAuthority(SCOPE_WRITER, SCOPE_ADMIN)
-                        .antMatchers(HttpMethod.PATCH).hasAnyAuthority(SCOPE_WRITER, SCOPE_ADMIN)
-                        .anyRequest()
-                            .authenticated()
-                .and()
-                    .oauth2ResourceServer()
-                        .jwt();
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests((authorize) -> authorize
+                    .requestMatchers(HttpMethod.GET).hasAnyAuthority(SCOPE_WRITER, SCOPE_READER, SCOPE_ADMIN)
+                    .requestMatchers(HttpMethod.POST).hasAnyAuthority(SCOPE_WRITER, SCOPE_ADMIN)
+                    .requestMatchers(HttpMethod.DELETE).hasAnyAuthority(SCOPE_WRITER, SCOPE_ADMIN)
+                    .requestMatchers(HttpMethod.PUT).hasAnyAuthority(SCOPE_WRITER, SCOPE_ADMIN)
+                    .requestMatchers(HttpMethod.PATCH).hasAnyAuthority(SCOPE_WRITER, SCOPE_ADMIN)
+                    .anyRequest().authenticated()
+            ).oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));
+        return http.build();
     }
 }
