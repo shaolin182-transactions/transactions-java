@@ -142,7 +142,6 @@
           <includes>
             <include>**/IntegrationTest</include>
           </includes>
-<!--          <groups>IntegrationTest</groups>-->
         </configuration>
       </plugin>
       <plugin>
