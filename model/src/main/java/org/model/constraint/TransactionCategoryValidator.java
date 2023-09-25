@@ -2,8 +2,8 @@ package org.model.constraint;
 
 import org.model.transactions.TransactionCategory;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 /**
  * Check that a category can contains only an id

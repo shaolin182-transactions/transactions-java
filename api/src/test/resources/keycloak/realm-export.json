@@ -1,0 +1,114 @@
+{
+  "realm": "transaction",
+  "enabled": true,
+  "roles": {
+    "realm": [
+      {
+        "name": "transaction-reader",
+        "description": "",
+        "composite": false,
+        "clientRole": false,
+        "attributes": {}
+      }
+    ]
+  },
+  "clientScopes": [
+    {
+      "name": "reader",
+      "description": "",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true",
+        "gui.order": "",
+        "consent.screen.text": ""
+      }
+    },
+    {
+      "name": "writer",
+      "description": "",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true",
+        "gui.order": "",
+        "consent.screen.text": ""
+      }
+    }
+  ],
+  "scopeMappings": [
+    {
+      "clientScope": "reader",
+      "roles": [
+        "transaction-reader"
+      ]
+    },
+    {
+      "clientScope": "writer",
+      "roles": [
+        "transaction-reader"
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "transactions-client",
+      "rootUrl": "http://localhost/*",
+      "adminUrl": "http://localhost/*",
+      "baseUrl": "",
+      "enabled": true,
+      "alwaysDisplayInConsole": false,
+      "clientAuthenticatorType": "client-secret",
+      "redirectUris": [
+        "http://localhost/*"
+      ],
+      "webOrigins": [
+        "http://localhost"
+      ],
+      "notBefore": 0,
+      "bearerOnly": false,
+      "consentRequired": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "publicClient": true,
+      "frontchannelLogout": false,
+      "protocol": "openid-connect",
+      "authenticationFlowBindingOverrides": {},
+      "fullScopeAllowed": true,
+      "nodeReRegistrationTimeout": -1,
+      "defaultClientScopes": [
+        "web-origins",
+        "reader",
+        "profile",
+        "roles",
+        "writer",
+        "email"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "janedoe",
+      "email": "jane.doe@baeldung.com",
+      "firstName": "Jane",
+      "lastName": "Doe",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "s3cr3t"
+        }
+      ],
+      "realmRoles" : [ "transaction-reader" ],
+      "clientRoles": {
+        "account": [
+          "view-profile",
+          "manage-account",
+          "transaction-reader"
+        ]
+      }
+    }
+  ]
+}

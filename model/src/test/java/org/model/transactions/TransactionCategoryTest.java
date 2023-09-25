@@ -2,16 +2,17 @@ package org.model.transactions;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.model.transactions.TransactionCategory.TransactionCategoryBuilder;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -20,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.model.transactions.TransactionCategoryType.COURANTE;
 import static org.model.transactions.TransactionCategoryType.EXTRA;
 import static org.model.transactions.TransactionCategoryType.FIXE;
-
+@Tag("UnitTest")
 class TransactionCategoryTest {
 
     private static Validator validator;

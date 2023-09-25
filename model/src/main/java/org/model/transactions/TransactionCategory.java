@@ -2,7 +2,7 @@ package org.model.transactions;
 
 import org.model.constraint.ValidTransactionCategory;
 
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 import java.util.Objects;
 import java.util.function.Consumer;
 
