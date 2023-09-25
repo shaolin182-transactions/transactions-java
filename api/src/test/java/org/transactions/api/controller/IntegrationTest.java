@@ -2,9 +2,12 @@ package org.transactions.api.controller;
 
 import dasniko.testcontainers.keycloak.KeycloakContainer;
 import io.restassured.http.Header;
-import io.restassured.specification.RequestSpecification;
 import org.apache.http.client.utils.URIBuilder;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.model.transactions.Transaction;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -26,8 +29,10 @@ import static io.restassured.RestAssured.given;
  */
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Tag("IntegrationTest")
 public class IntegrationTest {
 
+    public static final String AUTHORIZATION = "Authorization";
     @Container
     static KeycloakContainer keycloak = new KeycloakContainer("quay.io/keycloak/keycloak:21.1.2")
             .withRealmImportFile("keycloak/realm-export.json");
@@ -42,6 +47,7 @@ public class IntegrationTest {
     static void registerResourceServerIssuerProperty(DynamicPropertyRegistry registry) {
         registry.add("spring.security.oauth2.resourceserver.jwt.issuer-uri", () -> keycloak.getAuthServerUrl() + "realms/transaction");
         registry.add("spring.security.oauth2.resourceserver.jwt.jwk-set-uri", () -> keycloak.getAuthServerUrl() + "realms/transaction/protocol/openid-connect/certs");
+
         registry.add("spring.data.mongodb.host", () -> mongoDbContainer.getHost());
         registry.add("spring.data.mongodb.port", () -> mongoDbContainer.getMappedPort(27017));
     }
@@ -49,37 +55,106 @@ public class IntegrationTest {
     @Test
     void integrationTest() throws URISyntaxException {
 
+        String urlApp = "http://localhost:" + randomServerPort;
+
         // Get Token from Keycloak server
         String token = getToken();
-        System.out.println(token);
-        //token = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJuT3JMWF80a2s3Ri1nMmQySWJTaHhUYThVU3N4UF9NeElQSFZ4azlCWW5jIn0.eyJleHAiOjE2OTUzMTMyOTIsImlhdCI6MTY5NTMxMjk5MiwiYXV0aF90aW1lIjoxNjk1MzEyNjQ3LCJqdGkiOiIyMTJmMTIzMC0wZTZhLTQwMTgtOWIxMi1iNzdhODgyOWI4ZGIiLCJpc3MiOiJodHRwOi8va2V5Y2xvYWsuMTI3LTAtMC0xLm5pcC5pby9yZWFsbXMvdHJhbnNhY3Rpb25zIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6IjE0ZTkyMjdmLWFjNmMtNGU1Yi1iYWYxLTE1ZWZiYjU0Yzc1YiIsInR5cCI6IkJlYXJlciIsImF6cCI6InRyYW5zYWN0aW9ucy1hcGkiLCJzZXNzaW9uX3N0YXRlIjoiNDZmYzU3YTctY2EzNS00ZDdiLWFiNzUtOGY3MzMyZDdjODRlIiwiYWxsb3dlZC1vcmlnaW5zIjpbImh0dHA6Ly9sb2NhbGhvc3QiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbInRyYW5zYWN0aW9uLXJlYWRlciIsIm9mZmxpbmVfYWNjZXNzIiwiZGVmYXVsdC1yb2xlcy10cmFuc2FjdGlvbnMiLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoicmVhZGVyIHByb2ZpbGUgd3JpdGVyIGVtYWlsIiwic2lkIjoiNDZmYzU3YTctY2EzNS00ZDdiLWFiNzUtOGY3MzMyZDdjODRlIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoiSnVsaWVuIEdpcmFyZCIsInByZWZlcnJlZF91c2VybmFtZSI6Imp1Z2lyYXJkIiwiZ2l2ZW5fbmFtZSI6Ikp1bGllbiIsImZhbWlseV9uYW1lIjoiR2lyYXJkIiwiZW1haWwiOiJnaXJhcmQuanVsaWVuQGdtYWlsLmNvbSJ9.hxx5d5B8FaEvdl-uvJeWQzn-YaIVV1KBJXQKgsHSPbGA8697gdbndJRM9X43ijVtCB12ly8BlPYC0ULQEU2USywWpbIxXve26AgrRE91H-DyK4SOP1qZJYyWK4ob9cwiaRklceS32ifAqPDulF6x4fvo0Q5VGdneohe9wYWF_rzic_JBY3KPJVj43OTqMFBo2oGc_knImRWXAoaFWU_EeC7rfUzSr8pomPhN-PkfoPeTZqoxvMzuJiAWHTLrRtwmFkXFEEL2hkeKkemk1azL64cU9nxsE7xTLPsVkeBPpHGrsZ4GFFWhysGxTOLMWNhNP5IJMgA1NUMgRAmZSL_cqA";
+        String headerAuthValue = "Bearer " + token;
 
-        // Call API
-        RequestSpecification request = given()
+        // 1 - Get All Transactions - should be empty
+        given()
+            .header(new Header(AUTHORIZATION, headerAuthValue))
+            .header(new Header("Content-Type", "application/json"))
+        .when()
+            .get(urlApp + "/transactions")
+        .then()
+            .statusCode(200)
+            .body("$", Matchers.empty());
+
+        // 2 - Create a transaction
+        String id = given()
             .body("{\n" +
-                    "\t\"date\": \"2023-09-01T22:18:37.683+01:00\",\n" +
+                    "\t\"date\": \"2020-05-04T22:16:37.683+01:00\",\n" +
                     "\t\"transactions\": [\n" +
                     "\t\t{\n" +
                     "\t\t\t\"income\" : 0,\n" +
-                    "\t\t\t\"outcome\": 69.57,\n" +
-                    "            \"category\" : {\n" +
-                    "                \"id\" : 26\n" +
-                    "            },\n" +
+                    "\t\t\t\"outcome\": 1276.87,\n" +
+                    "\t\t\t\"category\": {\n" +
+                    "\t\t\t\t\"id\": 1,\n" +
+                    "\t\t\t\t\"category\": \"Maison\",\n" +
+                    "\t\t\t\t\"label\": \"Loyer/Prêt\",\n" +
+                    "\t\t\t\t\"type\": \"FIXE\"\n" +
+                    "\t\t\t},\n" +
                     "\t\t\t\"bankAccount\": {\n" +
-                    "\t\t\t\t\"id\" : 30\n" +
-                    "\t\t\t}\n" +
+                    "\t\t\t\t\"id\" : 12,\n" +
+                    "\t\t\t\t\"category\": \"Commun\",\n" +
+                    "\t\t\t\t\"label\": \"CMB\"\n" +
+                    "\t\t\t},\n" +
+                    "\t\t\t\"description\": \"Loyer\"\n" +
                     "\t\t}\n" +
                     "\t]\n" +
                     "}")
-            .header(new Header("Authorization", "Bearer " + token))
-            .header(new Header("Content-Type", "application/json"));
-        request.when()
-            .post("http://localhost:" + randomServerPort + "/transactions")
-
+            .header(new Header("Authorization", headerAuthValue))
+            .header(new Header("Content-Type", "application/json"))
+        .when()
+            .post(urlApp + "/transactions")
         .then()
-            .statusCode(201);
+            .statusCode(201)
+            .extract()
+                .path("id");
 
-        // Check entry in database
+        // 3 - Patch transaction
+        given()
+            .header(new Header(AUTHORIZATION, headerAuthValue))
+            .header(new Header("Content-Type", "application/json-patch+json"))
+            .body("[\n" +
+                    "    {\n" +
+                    "        \"op\" : \"replace\",\n" +
+                    "        \"path\" : \"/transactions/0/outcome\",\n" +
+                    "        \"value\": 50\n" +
+                    "    }\n" +
+                    "]")
+        .when()
+            .patch(urlApp + "/transactions/" + id)
+        .then()
+            .statusCode(200);
+
+        // 4 - Consult transaction
+        Transaction result = given()
+            .header(new Header(AUTHORIZATION, headerAuthValue))
+            .header(new Header("Content-Type", "application/json"))
+        .when()
+            .get(urlApp + "/transactions/" + id)
+        .then()
+            .statusCode(200)
+            .extract().body().as(Transaction.class);
+
+        // Assertions
+        Assertions.assertEquals(id, result.getId());
+        Assertions.assertEquals(1, result.getTransactions().size());
+        Assertions.assertEquals(50, result.getTransactions().get(0).getOutcome());
+        Assertions.assertEquals(0, result.getTransactions().get(0).getIncome());
+        Assertions.assertEquals(12, result.getTransactions().get(0).getBankAccount().getId());
+        Assertions.assertEquals(1, result.getTransactions().get(0).getCategory().getId());
+
+        // 5 - Delete Transaction
+        given()
+            .header(new Header(AUTHORIZATION, headerAuthValue))
+            .header(new Header("Content-Type", "application/json"))
+        .when()
+            .delete(urlApp + "/transactions/" + id)
+        .then()
+            .statusCode(204);
+
+        // 6 - Check that no transactions exists
+        given()
+                .header(new Header(AUTHORIZATION, headerAuthValue))
+                .header(new Header("Content-Type", "application/json"))
+                .when()
+                .get(urlApp + "/transactions")
+                .then()
+                .statusCode(200)
+                .body("$", Matchers.empty());
 
     }
 
@@ -103,6 +178,4 @@ public class IntegrationTest {
 
         return result;
     }
-
-
 }

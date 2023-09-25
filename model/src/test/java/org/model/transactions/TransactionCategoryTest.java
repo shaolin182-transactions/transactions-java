@@ -2,6 +2,7 @@ package org.model.transactions;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -20,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.model.transactions.TransactionCategoryType.COURANTE;
 import static org.model.transactions.TransactionCategoryType.EXTRA;
 import static org.model.transactions.TransactionCategoryType.FIXE;
-
+@Tag("UnitTest")
 class TransactionCategoryTest {
 
     private static Validator validator;

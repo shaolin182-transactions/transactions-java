@@ -38,6 +38,7 @@
     <project.version>1.0-SNAPSHOT</project.version>
 
     <!-- Dependencies versions-->
+    <org.glassfish.jakarta.el.version>4.0.2</org.glassfish.jakarta.el.version>
     <json-patch.version>1.13</json-patch.version>
     <de.flapdoodle.embed.mongo.version>4.9.2</de.flapdoodle.embed.mongo.version>
     <spring-cloud-version>2022.0.4</spring-cloud-version>
@@ -109,6 +110,12 @@
         <version>${project.version}</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.glassfish</groupId>
+        <artifactId>jakarta.el</artifactId>
+        <version>${org.glassfish.jakarta.el.version}</version>
+      </dependency>
+
       <!-- For handling patch operation -->
       <dependency>
         <groupId>com.github.java-json-tools</groupId>
@@ -172,6 +179,10 @@
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
           <version>${maven-jar-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
         </plugin>
         <plugin>
           <artifactId>maven-install-plugin</artifactId>

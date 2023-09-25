@@ -24,14 +24,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests((authorize) -> authorize
-                    .requestMatchers(HttpMethod.GET).permitAll()
-                    .requestMatchers(HttpMethod.POST).permitAll()
-                    .requestMatchers(HttpMethod.DELETE).permitAll()
-                    .requestMatchers(HttpMethod.PUT).permitAll()
-                    .requestMatchers(HttpMethod.PATCH).permitAll()
+                    .requestMatchers(HttpMethod.GET).hasAnyAuthority(SCOPE_ADMIN, SCOPE_READER, SCOPE_WRITER)
+                    .requestMatchers(HttpMethod.POST).hasAnyAuthority(SCOPE_ADMIN, SCOPE_READER, SCOPE_WRITER)
+                    .requestMatchers(HttpMethod.DELETE).hasAnyAuthority(SCOPE_ADMIN, SCOPE_READER, SCOPE_WRITER)
+                    .requestMatchers(HttpMethod.PUT).hasAnyAuthority(SCOPE_ADMIN, SCOPE_READER, SCOPE_WRITER)
+                    .requestMatchers(HttpMethod.PATCH).hasAnyAuthority(SCOPE_ADMIN, SCOPE_READER, SCOPE_WRITER)
                     .anyRequest().authenticated()
-            ).oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
-                .csrf(csrf -> csrf.disable());
+            ).oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));
         return http.build();
     }
 }

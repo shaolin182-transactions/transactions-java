@@ -3,6 +3,7 @@ package org.transactions.api.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.model.error.Error;
@@ -35,6 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 
 @WebMvcTest(controllers = TransactionsController.class)
+@Tag("UnitTest")
 class TransactionsControllerTest {
 
     @Autowired
