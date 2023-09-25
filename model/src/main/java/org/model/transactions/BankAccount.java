@@ -3,7 +3,7 @@ package org.model.transactions;
 import org.model.constraint.ValidBankAccount;
 import org.model.transactions.TransactionDetails.TransactionDetailsBuilder;
 
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 import java.util.Objects;
 import java.util.function.Consumer;
 

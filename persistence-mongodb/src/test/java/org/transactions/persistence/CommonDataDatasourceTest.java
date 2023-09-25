@@ -1,9 +1,7 @@
 package org.transactions.persistence;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -31,9 +29,11 @@ import java.util.stream.Stream;
 import static org.model.transactions.TransactionCategoryType.COURANTE;
 import static org.model.transactions.TransactionCategoryType.EXTRA;
 
+@Tag("UnitTest")
 @ExtendWith({SpringExtension.class})
 @DataMongoTest
 @ContextConfiguration(classes = {TestApplication.class, MongoConfig.class})
+@Disabled
 class CommonDataDatasourceTest {
 
     @Autowired

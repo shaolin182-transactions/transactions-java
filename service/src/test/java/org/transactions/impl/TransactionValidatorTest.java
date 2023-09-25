@@ -2,6 +2,7 @@ package org.transactions.impl;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -20,6 +21,7 @@ import java.time.OffsetDateTime;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
+@Tag("UnitTest")
 class TransactionValidatorTest {
 
     @Mock

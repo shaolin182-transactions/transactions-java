@@ -1,10 +1,10 @@
-FROM maven:3.6.3-jdk-11-slim AS build
+FROM maven:3.9.2-eclipse-temurin-17-alpine AS build
 RUN mkdir -p /workspace
 WORKDIR /workspace
 COPY . /workspace
 RUN mvn -B -f pom.xml clean package -DskipTests
 
-FROM openjdk:11-jdk
+FROM eclipse-temurin:17-alpine
 
 ENV TARGET_ENV=dev
 ENV CONFIG_SERVER=http://localhost:8888

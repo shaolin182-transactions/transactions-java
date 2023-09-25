@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.transactions.ITransactionService;
 import org.model.transactions.Transaction;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;

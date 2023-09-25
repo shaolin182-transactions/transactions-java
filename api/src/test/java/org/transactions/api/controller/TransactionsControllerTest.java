@@ -3,28 +3,20 @@ package org.transactions.api.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.model.error.Error;
 import org.model.transactions.Transaction;
 import org.model.transactions.builder.TransactionBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityDataConfiguration;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.transactions.ITransactionService;
-import org.transactions.api.security.SecurityConfig;
 import org.transactions.connector.ITransactionDataSource;
 import org.transactions.exception.TransactionNotFoundException;
 import org.transactions.persistence.repositories.TransactionsRepository;
@@ -44,6 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 
 @WebMvcTest(controllers = TransactionsController.class)
+@Tag("UnitTest")
 class TransactionsControllerTest {
 
     @Autowired
@@ -72,7 +65,7 @@ class TransactionsControllerTest {
 
         mockMvc.perform(get("/transactions")
                 .contentType("application/json")
-                .with(jwt(builder -> builder.claim("scope", new String("reader")))))
+                .with(jwt().jwt(builder -> builder.claim("scope", new String("reader")))))
                 .andExpect(status().isOk());
 
     }
@@ -84,7 +77,7 @@ class TransactionsControllerTest {
         when(service.getTransaction(Mockito.anyString())).thenThrow(TransactionNotFoundException.class);
 
         MvcResult result = mockMvc.perform(get("/transactions/anyId")
-                .with(jwt(builder -> builder.claim("scope", new String("reader")))))
+                .with(jwt().jwt(builder -> builder.claim("scope", new String("reader")))))
                 .andExpect(status().isNotFound())
                 .andReturn();
 
@@ -111,7 +104,7 @@ class TransactionsControllerTest {
         when(service.getTransaction(Mockito.anyString())).thenReturn(expectedTransaction);
 
         MvcResult result = mockMvc.perform(get("/transactions/anyId")
-                .with(jwt(builder -> builder.claim("scope", new String("reader")))))
+                .with(jwt().jwt(builder -> builder.claim("scope", new String("reader")))))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -139,7 +132,7 @@ class TransactionsControllerTest {
         MvcResult result = mockMvc.perform(post("/transactions")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(expectedTransaction))
-                        .with(jwt(builder -> builder.claim("scope", new String("writer")))))
+                        .with(jwt().jwt(builder -> builder.claim("scope", new String("writer")))))
                 .andExpect(status().isCreated())
                 .andReturn();
 
@@ -165,7 +158,7 @@ class TransactionsControllerTest {
         MvcResult result = mockMvc.perform(post("/transactions")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(transaction)
-                .with(jwt(builder -> builder.claim("scope", new String("writer")))))
+                .with(jwt().jwt(builder -> builder.claim("scope", new String("writer")))))
                 .andExpect(status().isCreated())
                 .andReturn();
 
@@ -189,7 +182,7 @@ class TransactionsControllerTest {
         MvcResult result = mockMvc.perform(post("/transactions")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(transaction)
-                .with(jwt(builder -> builder.claim("scope", new String("writer")))))
+                .with(jwt().jwt(builder -> builder.claim("scope", new String("writer")))))
                 .andExpect(status().isBadRequest())
                 .andReturn();
     }
@@ -211,7 +204,7 @@ class TransactionsControllerTest {
         MvcResult result = mockMvc.perform(post("/transactions")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(transaction)
-                .with(jwt(builder -> builder.claim("scope", new String("writer")))))
+                .with(jwt().jwt(builder -> builder.claim("scope", new String("writer")))))
                 .andExpect(status().isBadRequest())
                 .andReturn();
     }
@@ -222,7 +215,7 @@ class TransactionsControllerTest {
 
         mockMvc.perform(delete("/transactions/someId")
                 .contentType(MediaType.APPLICATION_JSON)
-                .with(jwt(builder -> builder.claim("scope", new String("writer")))))
+                .with(jwt().jwt(builder -> builder.claim("scope", new String("writer")))))
                 .andExpect(status().isNoContent());
     }
 
@@ -237,7 +230,7 @@ class TransactionsControllerTest {
                         "  { \"op\": \"add\", \"path\": \"/hello\", \"value\": [\"world\"] },\n" +
                         "  { \"op\": \"remove\", \"path\": \"/foo\" }\n" +
                         "]")
-                .with(jwt(builder -> builder.claim("scope", new String("writer")))))
+                .with(jwt().jwt(builder -> builder.claim("scope", new String("writer")))))
                 .andExpect(status().isOk()).andReturn();
 
         Mockito.verify(service, Mockito.times(1)).patchTransaction(any(), any());
@@ -263,7 +256,7 @@ class TransactionsControllerTest {
         MvcResult result = mockMvc.perform(put("/transactions/someId")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(expectedTransaction))
-                .with(jwt(builder -> builder.claim("scope", new String("writer")))))
+                .with(jwt().jwt(builder -> builder.claim("scope", new String("writer")))))
                 .andExpect(status().isOk())
                 .andReturn();
 

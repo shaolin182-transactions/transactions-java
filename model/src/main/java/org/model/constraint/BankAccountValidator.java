@@ -2,8 +2,8 @@ package org.model.constraint;
 
 import org.model.transactions.BankAccount;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 public class BankAccountValidator implements ConstraintValidator<ValidBankAccount, BankAccount> {
     @Override

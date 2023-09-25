@@ -2,8 +2,8 @@ package org.model.constraint;
 
 import org.model.transactions.TransactionDetails;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 /**
  * Check that a transaction detail cannot have both fields 'income' and 'outcome' set
