@@ -1,0 +1,54 @@
+spring:
+  application:
+    name: transactions-java-server
+
+  # Do not use Cloud Config server in Dev mode
+  cloud:
+    config:
+      enabled: false
+
+  jackson:
+    deserialization:
+      FAIL_ON_UNKNOWN_PROPERTIES: true
+
+  data:
+    mongodb:
+      host: localhost
+      port: 27018
+      database: transactions-dev
+      uri: mongodb://localhost:27017/transactions-dev
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8082/auth/realms/transactions
+          jwk-set-uri: http://keycloak:8080/auth/realms/transactions/protocol/openid-connect/certs
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+
+endpoints:
+  health:
+    sensitive: false
+
+# Actuator Configuration
+management:
+  security:
+    enabled: false
+  health:
+    mongo:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include:
+          - refresh
+          - health
+          - info
+          - metrics
+          - actuator
