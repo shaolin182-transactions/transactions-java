@@ -18,6 +18,7 @@ Env for developing 'transactions-java' module
 
 ```
 # From transactions-deployment directory
+# Run Mongodb database
 docker compose -f docker-compose-dev.yml up -d
 
 # From transactions-java/api directory
