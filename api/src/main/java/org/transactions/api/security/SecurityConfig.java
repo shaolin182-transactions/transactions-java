@@ -23,12 +23,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+            .cors(Customizer.withDefaults())
             .authorizeHttpRequests(authorize -> authorize
                     .requestMatchers(HttpMethod.GET).hasAnyAuthority(SCOPE_ADMIN, SCOPE_READER, SCOPE_WRITER)
                     .requestMatchers(HttpMethod.POST).hasAnyAuthority(SCOPE_ADMIN, SCOPE_READER, SCOPE_WRITER)
                     .requestMatchers(HttpMethod.DELETE).hasAnyAuthority(SCOPE_ADMIN, SCOPE_READER, SCOPE_WRITER)
                     .requestMatchers(HttpMethod.PUT).hasAnyAuthority(SCOPE_ADMIN, SCOPE_READER, SCOPE_WRITER)
                     .requestMatchers(HttpMethod.PATCH).hasAnyAuthority(SCOPE_ADMIN, SCOPE_READER, SCOPE_WRITER)
+                    .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                     .anyRequest().authenticated()
             ).oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
         return http.build();

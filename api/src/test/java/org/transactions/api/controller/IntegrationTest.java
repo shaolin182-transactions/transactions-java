@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.when;
 
 /**
  * Test that receive request from a random authenticated client
@@ -60,6 +61,11 @@ public class IntegrationTest {
         // Get Token from Keycloak server
         String token = getToken();
         String headerAuthValue = "Bearer " + token;
+
+        when()
+            .options(urlApp + "/transactions")
+        .then()
+            .statusCode(200);
 
         // 1 - Get All Transactions - should be empty
         given()
