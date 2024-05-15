@@ -1,5 +1,6 @@
 package org.transactions.api.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -11,8 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.Arrays;
+import org.transactions.api.config.CorsConfigProperties;
 
 @Configuration
 @Profile("!dev")
@@ -24,6 +24,9 @@ public class SecurityConfig {
     private static final String SCOPE_WRITER = "SCOPE_writer";
 
     private static final String SCOPE_ADMIN = "SCOPE_admin";
+
+    @Autowired
+    CorsConfigProperties corsConfigProperties;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -44,9 +47,9 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost"));
-        corsConfiguration.setAllowedHeaders(Arrays.asList("authorization"));
-        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT"));
+        corsConfiguration.setAllowedOrigins(corsConfigProperties.getAllowedOrigins());
+        corsConfiguration.setAllowedHeaders(corsConfigProperties.getAllowedHeaders());
+        corsConfiguration.setAllowedMethods(corsConfigProperties.getAllowedMethods());
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
         return source;
