@@ -52,3 +52,15 @@ management:
           - info
           - metrics
           - actuator
+
+app:
+  cors:
+    allowed-origins:
+      - http://localhost
+    allowed-methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+    allowed-headers:
+      - authorization

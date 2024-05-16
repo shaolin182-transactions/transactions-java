@@ -25,6 +25,8 @@ docker compose -f docker-compose-dev.yml up -d
 mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
+With 'dev' profile, bean related to security is disabled
+
 ## Running in local
 
 Env for testing 'transactions-java' module

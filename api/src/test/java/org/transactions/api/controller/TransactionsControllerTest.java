@@ -70,6 +70,17 @@ class TransactionsControllerTest {
 
     }
 
+    @DisplayName("Get All Transactions - Without token")
+    @Test
+    void noToken() throws Exception {
+
+        when(service.getAllTransactions()).thenReturn(new ArrayList<>());
+
+        mockMvc.perform(get("/transactions")
+                        .contentType("application/json"))
+                .andExpect(status().isUnauthorized());
+    }
+
     @DisplayName("Get Transaction - Check Error Handling")
     @Test
     void getTransactionException() throws Exception {
