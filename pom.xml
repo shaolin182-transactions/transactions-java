@@ -11,7 +11,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.1.3</version>
+    <version>3.4.1</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
 
@@ -38,12 +38,12 @@
     <project.version>1.0-SNAPSHOT</project.version>
 
     <!-- Dependencies versions-->
-    <org.glassfish.jakarta.el.version>4.0.2</org.glassfish.jakarta.el.version>
     <json-patch.version>1.13</json-patch.version>
     <de.flapdoodle.embed.mongo.version>4.9.2</de.flapdoodle.embed.mongo.version>
-    <spring-cloud-version>2022.0.4</spring-cloud-version>
+    <spring-cloud-version>2024.0.0</spring-cloud-version>
     <testcontainers-keycloak.version>2.6.0</testcontainers-keycloak.version>
-    <testcontainers-mongo.version>1.18.3</testcontainers-mongo.version>
+    <testcontainers-mongo.version>1.20.4</testcontainers-mongo.version>
+    <expressly.version>6.0.0-M1</expressly.version>
     <!-- END dependencies versions -->
 
     <!-- Plugins versions-->
@@ -110,10 +110,11 @@
         <version>${project.version}</version>
       </dependency>
 
+
       <dependency>
-        <groupId>org.glassfish</groupId>
-        <artifactId>jakarta.el</artifactId>
-        <version>${org.glassfish.jakarta.el.version}</version>
+        <groupId>org.glassfish.expressly</groupId>
+        <artifactId>expressly</artifactId>
+        <version>${expressly.version}</version>
       </dependency>
 
       <!-- For handling patch operation -->

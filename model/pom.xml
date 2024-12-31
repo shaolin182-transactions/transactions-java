@@ -23,9 +23,10 @@
             <artifactId>hibernate-validator</artifactId>
         </dependency>
 
+        <!-- requires for Hibernate-validator https://docs.jboss.org/hibernate/validator/8.0/reference/en-US/html_single/#validator-gettingstarted -->
         <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>jakarta.el</artifactId>
+            <groupId>org.glassfish.expressly</groupId>
+            <artifactId>expressly</artifactId>
         </dependency>
         <!-- End Validating data -->
 
