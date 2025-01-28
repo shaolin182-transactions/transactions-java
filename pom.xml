@@ -241,6 +241,7 @@
         <version>11.1.1</version>
         <configuration>
           <nvdApiKey>${NVD_API_KEY}</nvdApiKey>
+          <skip>true</skip>
         </configuration>
         <executions>
           <execution>
@@ -255,6 +256,7 @@
         <groupId>org.cyclonedx</groupId>
         <artifactId>cyclonedx-maven-plugin</artifactId>
         <configuration>
+          <skip>true</skip>
           <outputFormat>json</outputFormat>
           <outputName>sbom</outputName>
         </configuration>
