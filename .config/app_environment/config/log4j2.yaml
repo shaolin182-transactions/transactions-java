@@ -1,0 +1,19 @@
+Configuration:
+  Appenders:
+    Console:
+      name: Console
+      target: SYSTEM_OUT
+      JsonTemplateLayout:
+        eventTemplateUri: "classpath:EcsLayout.json"
+
+  Loggers:
+    Root:
+      level: ERROR
+      AppenderRef:
+        ref: Console
+    Logger:
+      - name: org.transactions
+        level: INFO
+        additivity: false
+        AppenderRef:
+          ref: Console
