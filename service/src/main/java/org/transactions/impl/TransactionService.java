@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
+import io.micrometer.observation.annotation.Observed;
 import org.apache.commons.lang3.StringUtils;
 import org.model.transactions.BankAccount;
 import org.model.transactions.Transaction;
@@ -24,6 +25,9 @@ import org.transactions.exception.TransactionProcessException;
 import java.util.List;
 import java.util.Optional;
 
+@Observed(name = "transactions.domain",
+        contextualName = "transactions-domain",
+        lowCardinalityKeyValues = {"layer", "domain"})
 @Service
 public class TransactionService implements ITransactionService {
 
