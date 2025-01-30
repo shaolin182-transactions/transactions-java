@@ -1,0 +1,19 @@
+Configuration:
+  Appenders:
+    Console:
+      name: Console
+      target: SYSTEM_OUT
+      PatternLayout:
+        pattern: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%mdc%n"
+
+  Loggers:
+    Root:
+      level: INFO
+      AppenderRef:
+        ref: Console
+    Logger:
+      - name: org.transactions
+        level: DEBUG
+        additivity: false
+        AppenderRef:
+          ref: Console

@@ -9,4 +9,4 @@ FROM eclipse-temurin:17-alpine
 COPY --from=build /workspace/api/target/*.jar app.jar
 
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/app.jar", "----spring.config.location=/etc/config/application.yaml"]
+ENTRYPOINT ["java", "-Dlogging.config=/etc/config/log4j2.yaml", "-jar", "/app.jar", "----spring.config.location=/etc/config/application.yaml"]

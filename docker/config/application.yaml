@@ -2,21 +2,16 @@ spring:
   application:
     name: transactions-java-server
 
-  # Do not use Cloud Config server in Dev mode
-  cloud:
-    config:
-      enabled: false
-
   jackson:
     deserialization:
       FAIL_ON_UNKNOWN_PROPERTIES: true
 
   data:
     mongodb:
-      host: localhost
-      port: 27018
+      host: dev-transactions-mongo-db-6
+      port: 27017
       database: transactions-dev
-      uri: mongodb://localhost:27017/transactions-dev
+      uri: mongodb://dev-transactions-mongo-db-6:27017/transactions-dev
 
   security:
     oauth2:
@@ -28,16 +23,15 @@ spring:
 server:
   port: 8080
 
-logging:
-  level:
-    root: INFO
-
 endpoints:
   health:
     sensitive: false
 
 # Actuator Configuration
 management:
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans
   security:
     enabled: false
   health:

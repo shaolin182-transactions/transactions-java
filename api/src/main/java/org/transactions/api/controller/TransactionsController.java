@@ -1,6 +1,9 @@
 package org.transactions.api.controller;
 
 import com.github.fge.jsonpatch.JsonPatch;
+import io.micrometer.observation.annotation.Observed;
+import jakarta.validation.Valid;
+import org.model.transactions.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,14 +11,15 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.transactions.ITransactionService;
-import org.model.transactions.Transaction;
 
-import jakarta.validation.Valid;
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
+@Observed(name = "transactions.controller",
+        contextualName = "transactions-controller",
+        lowCardinalityKeyValues = {"layer", "controller"})
 public class TransactionsController {
 
     @Autowired

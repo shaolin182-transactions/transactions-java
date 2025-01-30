@@ -1,5 +1,6 @@
 package org.transactions.persistence;
 
+import io.micrometer.observation.annotation.Observed;
 import org.model.transactions.BankAccount;
 import org.model.transactions.TransactionCategory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Observed(name = "transactions.persistence",
+        contextualName = "transactions-persistence",
+        lowCardinalityKeyValues = {"layer", "persistence"})
 @Component
 public class CommonDataDatasource implements ICommonDataDatasource {
 
