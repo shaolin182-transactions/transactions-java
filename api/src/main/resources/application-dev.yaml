@@ -41,8 +41,11 @@ management:
           - refresh
           - health
           - info
-          - metrics
+          - prometheus
           - actuator
+  tracing:
+    sampling:
+      probability: 1
 
 app:
   cors:
