@@ -1,0 +1,16 @@
+include:
+  - docker-compose-dev.yml
+
+services:
+  transactions-app-docker:
+    container_name: transactions-app-docker
+    build:
+      dockerfile: Dockerfile
+      context: ../../
+    environment:
+      # To deactivate authentication
+      SPRING_PROFILES_ACTIVE: dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./config:/etc/config

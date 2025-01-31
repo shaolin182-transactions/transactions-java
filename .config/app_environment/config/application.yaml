@@ -1,0 +1,63 @@
+spring:
+  application:
+    name: transactions-java-server
+
+  jackson:
+    deserialization:
+      FAIL_ON_UNKNOWN_PROPERTIES: true
+
+  data:
+    mongodb:
+      host: dev-transactions-mongo-db-6
+      port: 27017
+      database: transactions-dev
+      uri: mongodb://dev-transactions-mongo-db-6:27017/transactions-dev
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8082/auth/realms/transactions
+          jwk-set-uri: http://keycloak:8080/auth/realms/transactions/protocol/openid-connect/certs
+
+server:
+  port: 8080
+
+endpoints:
+  health:
+    sensitive: false
+
+# Actuator Configuration
+management:
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans
+  security:
+    enabled: false
+  health:
+    mongo:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include:
+          - refresh
+          - health
+          - info
+          - prometheus
+          - actuator
+  tracing:
+    sampling:
+      probability: 1
+
+app:
+  cors:
+    allowed-origins:
+      - http://localhost
+    allowed-methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+    allowed-headers:
+      - authorization
