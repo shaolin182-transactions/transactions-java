@@ -22,8 +22,12 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
         lowCardinalityKeyValues = {"layer", "controller"})
 public class TransactionsController {
 
-    @Autowired
     private ITransactionService service;
+
+    @Autowired
+    public TransactionsController(ITransactionService service){
+        this.service = service;
+    }
 
     /**
      * @return a list of all transactions found
