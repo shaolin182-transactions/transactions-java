@@ -1,6 +1,7 @@
 include:
   - docker-compose-dev.yml
 
+name: transactions-java-server-apps
 services:
   transactions-app-docker:
     container_name: transactions-app-docker

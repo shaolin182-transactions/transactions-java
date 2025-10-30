@@ -20,8 +20,22 @@ spring:
           issuer-uri: http://keycloak:8082/auth/realms/transactions
           jwk-set-uri: http://keycloak:8080/auth/realms/transactions/protocol/openid-connect/certs
 
+  ssl:
+    bundle:
+      jks:
+        server:
+          key:
+            alias: server
+          keystore:
+            location: src/main/resources/keystore.p12
+            password: password
+            type: PKCS12
+
+
 server:
   port: 8080
+  ssl:
+    bundle: server
 
 endpoints:
   health:

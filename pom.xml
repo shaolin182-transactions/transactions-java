@@ -39,7 +39,6 @@
 
     <!-- Dependencies versions-->
     <json-patch.version>1.13</json-patch.version>
-    <spring-cloud-version>2025.0.0</spring-cloud-version>
     <expressly.version>6.0.0</expressly.version>
     <!-- END dependencies versions -->
 
@@ -80,15 +79,6 @@
 
   <dependencyManagement>
     <dependencies>
-
-        <dependency>
-          <groupId>org.springframework.cloud</groupId>
-          <artifactId>spring-cloud-dependencies</artifactId>
-          <version>${spring-cloud-version}</version>
-          <type>pom</type>
-          <scope>import</scope>
-        </dependency>
-
       <dependency>
         <groupId>org.transactions</groupId>
         <artifactId>model</artifactId>

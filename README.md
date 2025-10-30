@@ -26,6 +26,13 @@ mvn spring-boot:run -Dspring-boot.run.profiles=dev
 
 With 'dev' profile, bean related to security is disabled
 
+
+### Génération keystore
+
+```shell
+keytool.exe -genkeypair -alias server -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore keystore.p12 -validity 3650
+```
+
 ## Running in local
 
 Env for testing 'transactions-java' module
