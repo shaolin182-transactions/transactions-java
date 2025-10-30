@@ -25,8 +25,12 @@ public class SecurityConfig {
 
     private static final String SCOPE_ADMIN = "SCOPE_admin";
 
+    private CorsConfigProperties corsConfigProperties;
+
     @Autowired
-    CorsConfigProperties corsConfigProperties;
+    public SecurityConfig(CorsConfigProperties corsConfigProperties){
+        this.corsConfigProperties = corsConfigProperties;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
