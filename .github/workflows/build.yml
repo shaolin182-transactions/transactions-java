@@ -40,13 +40,20 @@ jobs:
         scan-type: 'fs'
         format: 'sarif'
         exit-code: '1'
-        output: 'target/trivy-results.sarif'
+        output: 'trivy-results.sarif'
         ignore-unfixed: true
         vuln-type: 'os,library'
 
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       with:
+        path: 'trivy-results.sarif'
+
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
         path: target
+
+
 
 
