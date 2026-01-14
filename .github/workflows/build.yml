@@ -27,7 +27,7 @@ jobs:
         java-version: 17
 
     - name: Build with Maven
-      run: mvn -B clean deploy --file pom.xml org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=shaolin182-transactions_transactions-java
+      run: mvn -B clean deploy --file pom.xml
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
