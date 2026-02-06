@@ -1,5 +1,5 @@
 include:
-  - docker-compose-dev.yml
+  - docker-compose-dev-postgresql.yml
 
 services:
   transactions-app-docker:
@@ -7,9 +7,7 @@ services:
     build:
       dockerfile: Dockerfile
       context: ../../
-    environment:
-      # To deactivate authentication
-      SPRING_PROFILES_ACTIVE: dev
+    env_file: "app.env"
     ports:
       - "8080:8080"
     volumes:

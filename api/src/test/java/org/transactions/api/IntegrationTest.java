@@ -1,4 +1,4 @@
-package org.transactions.api.controller;
+package org.transactions.api;
 
 import dasniko.testcontainers.keycloak.KeycloakContainer;
 import io.restassured.http.Header;
@@ -10,10 +10,13 @@ import org.junit.jupiter.api.Test;
 import org.model.transactions.Transaction;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.postgresql.PostgreSQLContainer;
+import org.testcontainers.utility.DockerImageName;
 import org.transactions.utils.TransactionsMongoDbContainer;
 
 import java.net.URI;
@@ -31,6 +34,7 @@ import static io.restassured.RestAssured.when;
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Tag("IntegrationTest")
+@ActiveProfiles("mongodb")
 public class IntegrationTest {
 
     public static final String AUTHORIZATION = "Authorization";
@@ -40,6 +44,12 @@ public class IntegrationTest {
 
     @Container
     static final TransactionsMongoDbContainer mongoDbContainer = new TransactionsMongoDbContainer();
+
+    @Container
+    static final PostgreSQLContainer postgresContainer = new PostgreSQLContainer(DockerImageName.parse("postgres:18-alpine"))
+            .withDatabaseName("transactionsdb-test")
+            .withUsername("username")
+            .withPassword("password");
 
     @LocalServerPort
     int randomServerPort;
@@ -51,6 +61,10 @@ public class IntegrationTest {
 
         registry.add("spring.data.mongodb.host", () -> mongoDbContainer.getHost());
         registry.add("spring.data.mongodb.port", () -> mongoDbContainer.getMappedPort(27017));
+
+        registry.add("spring.datasource.url", postgresContainer::getJdbcUrl);
+        registry.add("spring.datasource.username", postgresContainer::getUsername);
+        registry.add("spring.datasource.password", postgresContainer::getPassword);
     }
 
     @Test

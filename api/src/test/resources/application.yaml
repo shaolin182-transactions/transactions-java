@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: mongodb
   cloud:
     config:
       enabled: false
@@ -6,6 +8,10 @@ spring:
   jackson:
     deserialization:
       FAIL_ON_UNKNOWN_PROPERTIES: true
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/transactions_dev
+    driver-class-name: org.postgresql.Driver
 
   data:
     mongodb:

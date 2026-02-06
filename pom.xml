@@ -25,6 +25,7 @@
     <module>service</module>
     <module>sonar-report</module>
     <module>common-connector</module>
+    <module>persistence-postgresql</module>
   </modules>
 
   <properties>
@@ -96,6 +97,12 @@
       <dependency>
         <groupId>org.transactions</groupId>
         <artifactId>persistence-mongodb</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.transactions</groupId>
+        <artifactId>persistence-postgresql</artifactId>
         <version>${project.version}</version>
       </dependency>
 

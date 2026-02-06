@@ -207,6 +207,8 @@ components:
     TransactionDetail:
       type: object
       properties:
+        id:
+          type: string
         category:
           $ref: '#/components/schemas/Category'
         income:
