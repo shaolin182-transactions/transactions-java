@@ -9,10 +9,13 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 @ValidIncomeOutcome
 public class TransactionDetails {
+
+    private UUID id;
 
     /**
      * Category of the transaction
@@ -47,6 +50,14 @@ public class TransactionDetails {
 
     private TransactionDetails() {
 
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public TransactionCategory getCategory() {
@@ -104,12 +115,13 @@ public class TransactionDetails {
                 Objects.equals(description, that.description) &&
                 Objects.equals(bankAccount, that.bankAccount) &&
                 Objects.equals(cost, that.cost) &&
-                Objects.equals(costAbs, that.costAbs);
+                Objects.equals(costAbs, that.costAbs)&&
+                Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(category, income, outcome, description, bankAccount, cost, costAbs);
+        return Objects.hash(category, income, outcome, description, bankAccount, cost, costAbs, id);
     }
 
     public static class TransactionDetailsBuilder {
@@ -128,6 +140,11 @@ public class TransactionDetails {
             this.parentBuilder = parentBuilder;
             this.callback = callback;
             this.instance = new TransactionDetails();
+        }
+
+        public TransactionDetailsBuilder withId(UUID id) {
+            this.instance.id = id;
+            return this;
         }
 
         public TransactionDetailsBuilder withIncome(Float income){

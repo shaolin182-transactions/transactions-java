@@ -4,6 +4,7 @@ import io.micrometer.observation.annotation.Observed;
 import org.model.transactions.BankAccount;
 import org.model.transactions.TransactionCategory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -17,6 +18,7 @@ import java.util.Optional;
         contextualName = "transactions-persistence",
         lowCardinalityKeyValues = {"layer", "persistence"})
 @Component
+@Profile("mongodb")
 public class CommonDataDatasource implements ICommonDataDatasource {
 
     private MongoTemplate mongoTemplate;
