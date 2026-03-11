@@ -1,12 +1,12 @@
-package org.transactions.model.builder;
+package org.model.transactions.builder;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.transactions.model.Transaction;
+import org.model.transactions.Transaction;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.transactions.model.TransactionCategoryType.COURANTE;
-import static org.transactions.model.TransactionCategoryType.EXTRA;
+import static org.model.transactions.TransactionCategoryType.COURANTE;
+import static org.model.transactions.TransactionCategoryType.EXTRA;
 
 class TransactionBuilderTest {
 

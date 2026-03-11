@@ -1,47 +1,96 @@
 package org.transactions.api.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+import org.model.error.Error;
+import org.model.transactions.builder.TransactionBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.transactions.ITransactionService;
-import org.transactions.model.Transaction;
+import org.transactions.connector.ITransactionDataSource;
+import org.transactions.exception.TransactionNotFoundException;
+import org.model.transactions.Transaction;
+import org.transactions.persistence.repositories.TransactionsRepository;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
+/**
+ * Some integration tests for testing api layer
+ */
+@WebMvcTest(controllers = TransactionsController.class)
 class TransactionsControllerTest {
 
-    @InjectMocks
-    TransactionsController controller;
+    @Autowired
+    private MockMvc mockMvc;
 
-    @Mock
+    @MockBean
     ITransactionService service;
 
+    @MockBean
+    ITransactionDataSource datasource;
+
+    @MockBean
+    TransactionsRepository repository;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Test
-    void getAll() {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+    void getAll() throws Exception {
 
-        Mockito.when(service.getAllTransactions()).thenReturn(new ArrayList<Transaction>());
+        when(service.getAllTransactions()).thenReturn(new ArrayList<Transaction>());
 
-        ResponseEntity<List<Transaction>> result = controller.getAll();
+        mockMvc.perform(get("/transactions")
+                .contentType("application/json"))
+                .andExpect(status().isOk());
 
-        assertEquals(0, result.getBody().size());
-        assertEquals(HttpStatus.OK, result.getStatusCode());
     }
 
     @Test
-    void getTransaction() {
+    void getTransactionException() throws Exception {
+
+        when(service.getTransaction(Mockito.anyString())).thenThrow(TransactionNotFoundException.class);
+
+        MvcResult result = mockMvc.perform(get("/transactions/anyId"))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        Error error = new Error(100, "No transaction Found");
+        String response = result.getResponse().getContentAsString();
+
+        Assertions.assertThat(objectMapper.writeValueAsString(error)).isEqualToIgnoringCase(response);
+    }
+
+    @Test
+    void getTransaction() throws Exception {
+
+        Transaction expectedTransaction = new TransactionBuilder()
+                .addTransactions()
+                    .addTransaction()
+                        .withCategory().withId(1).withCategory("desc").withLabel("label").done()
+                        .withIncome(12f).withOutcome(0f).done()
+                .done()
+                .withCost(12l)
+                .withBankAccountFrom().withCategory("cat").withId(2).withLabel("label").done()
+                .build();
+
+        when(service.getTransaction(Mockito.anyString())).thenReturn(expectedTransaction);
+
+        MvcResult result = mockMvc.perform(get("/transactions/anyId"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+
+        Assertions.assertThat(objectMapper.writeValueAsString(expectedTransaction)).isEqualToIgnoringCase(response);
     }
 }

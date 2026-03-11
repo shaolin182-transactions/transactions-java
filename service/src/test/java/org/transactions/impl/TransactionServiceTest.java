@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.transactions.connector.ITransactionDataSource;
 import org.transactions.exception.TransactionNotFoundException;
-import org.transactions.model.Transaction;
+import org.model.transactions.Transaction;
 
 import java.util.Optional;
 
