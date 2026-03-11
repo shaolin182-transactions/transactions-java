@@ -1,11 +1,13 @@
 package org.model.transactions;
 
+import org.model.constraint.ValidBankAccount;
 import org.model.transactions.TransactionDetails.TransactionDetailsBuilder;
 
 import javax.validation.constraints.*;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+@ValidBankAccount
 public class BankAccount {
 
     /**
@@ -21,7 +23,6 @@ public class BankAccount {
      */
     @Size(max = 64)
     @Pattern(regexp = "^[\\p{L}0-9/ ,'&-]*$")
-    @NotNull
     private String category;
 
     /**
@@ -29,15 +30,7 @@ public class BankAccount {
      */
     @Size(max = 64)
     @Pattern(regexp = "^[\\p{L}0-9/ ,'&-]*$")
-    @NotNull
     private String label;
-
-    /**
-     * Private constructor - New BankAccount object must be created through builder
-     */
-    private BankAccount(){
-        id = -1;
-    }
 
     public Integer getId() {
         return id;
@@ -49,6 +42,18 @@ public class BankAccount {
 
     public String getLabel() {
         return label;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     @Override

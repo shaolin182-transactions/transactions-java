@@ -1,9 +1,12 @@
 package org.model.transactions;
 
+import org.model.constraint.ValidTransactionCategory;
+
 import javax.validation.constraints.*;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+@ValidTransactionCategory
 public class TransactionCategory {
 
     /**
@@ -19,7 +22,6 @@ public class TransactionCategory {
      */
     @Size(max = 64)
     @Pattern(regexp = "^[\\p{L}0-9/ ,'&-]*$")
-    @NotNull
     private String category;
 
     /**
@@ -27,7 +29,6 @@ public class TransactionCategory {
      */
     @Size(max = 64)
     @Pattern(regexp = "^[\\p{L}0-9/ ,'&-]*$")
-    @NotNull
     private String label;
 
     /**

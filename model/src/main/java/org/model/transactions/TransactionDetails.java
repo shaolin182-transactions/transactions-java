@@ -175,6 +175,9 @@ public class TransactionDetails {
         }
     }
 
+    /**
+     * Compute some fields
+     */
     public void computeDynamicFields() {
         // Compute total cost in cent
         cost = (long) Math.round((income - outcome) * 100);
@@ -182,4 +185,6 @@ public class TransactionDetails {
         // Compute absolute value of cost
         costAbs =  Math.abs(cost);
     }
+
+
 }
