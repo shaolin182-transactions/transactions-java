@@ -3,6 +3,8 @@ package org.transactions.persistence.pg.converters;
 import org.apache.commons.lang3.StringUtils;
 import org.model.transactions.Transaction;
 import org.model.transactions.TransactionDetails;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.transactions.persistence.pg.entities.BankAccountEntity;
 import org.transactions.persistence.pg.entities.CategoryEntity;
@@ -17,13 +19,26 @@ import java.util.stream.Collectors;
 @Component
 public class TransactionConverter {
 
+    private static final Logger log = LoggerFactory.getLogger(TransactionConverter.class);
+
     public TransactionEntity convert(Transaction aTransaction) {
         if (aTransaction == null) {
             return null;
         }
         var entity = new TransactionEntity();
         if (StringUtils.isNotBlank(aTransaction.getId())){
-            entity.setId(UUID.fromString(aTransaction.getId()));
+
+            try {
+                var uuid = UUID.fromString(aTransaction.getId());
+                entity.setId(uuid);
+            } catch (IllegalArgumentException e) {
+                var uuid = UUID.randomUUID();
+                entity.setId(uuid);
+                log.atInfo()
+                    .addKeyValue("historical_id", aTransaction.getId())
+                    .addKeyValue("generated_uuid", uuid.toString())
+                    .log("historical ID {} modified by uuid {}", aTransaction.getId(), uuid.toString());
+            }
         }
         entity.setCost(aTransaction.getCost());
         entity.setCostAbs(aTransaction.getCostAbs());
