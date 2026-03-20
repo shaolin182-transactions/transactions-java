@@ -97,9 +97,7 @@ public class TransactionPgDatasource implements ITransactionDataSource, ITransac
     }
 
     private Optional<CategoryEntity> findCategoryById(Integer id) {
-        if (categories == null){
-            categories = StreamSupport.stream(categoryRepository.findAll().spliterator(), false).toList();
-        }
+        categories = StreamSupport.stream(categoryRepository.findAll().spliterator(), false).toList();
 
         return categories.stream()
                 .filter(item -> id.equals(item.getId()))
@@ -107,10 +105,7 @@ public class TransactionPgDatasource implements ITransactionDataSource, ITransac
     }
 
     private Optional<BankAccountEntity> findBankAccountById(Integer id) {
-        if (bankAccounts == null){
-            bankAccounts = StreamSupport.stream(bkRepository.findAll().spliterator(), false).toList();
-        }
-
+        bankAccounts = StreamSupport.stream(bkRepository.findAll().spliterator(), false).toList();
         return bankAccounts.stream()
                 .filter(item -> id.equals(item.getId()))
                 .findFirst();
