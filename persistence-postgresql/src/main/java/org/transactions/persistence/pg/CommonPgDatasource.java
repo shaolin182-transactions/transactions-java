@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 
-@Component
+@Component("posgresCommonDatasource")
 @Profile("postgresql")
 public class CommonPgDatasource implements ICommonDataDatasource {
 
