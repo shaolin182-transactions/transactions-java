@@ -58,21 +58,31 @@ public class CommonPgDatasource implements ICommonDataDatasource {
 
     @Override
     public void saveCategory(TransactionCategory category) {
-        var categoryEntity = new CategoryEntity();
-        categoryEntity.setId(category.getId());
-        categoryEntity.setCategory(category.getCategory());
-        categoryEntity.setLabel(category.getLabel());
-        categoryEntity.setType(category.getType().name());
-        catRepository.save(categoryEntity);
+
+        if (findCategoryById(category.getId()).isEmpty()){
+            var categoryEntity = new CategoryEntity();
+            categoryEntity.setId(category.getId());
+            categoryEntity.setCategory(category.getCategory());
+            categoryEntity.setLabel(category.getLabel());
+            categoryEntity.setType(category.getType().name());
+            catRepository.save(categoryEntity);
+
+            refresh();
+        }
     }
 
     @Override
     public void saveBankAccount(BankAccount bankAccount) {
-        var bankAccountEntity = new BankAccountEntity();
-        bankAccountEntity.setId(bankAccount.getId());
-        bankAccountEntity.setCategory(bankAccount.getCategory());
-        bankAccountEntity.setLabel(bankAccount.getLabel());
-        bkRepository.save(bankAccountEntity);
+
+        if (findBankAccountById(bankAccount.getId()).isEmpty()){
+            var bankAccountEntity = new BankAccountEntity();
+            bankAccountEntity.setId(bankAccount.getId());
+            bankAccountEntity.setCategory(bankAccount.getCategory());
+            bankAccountEntity.setLabel(bankAccount.getLabel());
+            bkRepository.save(bankAccountEntity);
+
+            refresh();
+        }
     }
 
     @Override
