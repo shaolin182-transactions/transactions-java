@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.transactions.connector.ICommonDataDatasource;
+import org.transactions.persistence.pg.entities.BankAccountEntity;
+import org.transactions.persistence.pg.entities.CategoryEntity;
 import org.transactions.persistence.pg.repositories.BankAccountRepository;
 import org.transactions.persistence.pg.repositories.CategoryRepository;
 
@@ -52,6 +54,25 @@ public class CommonPgDatasource implements ICommonDataDatasource {
         return bankAccounts.stream()
                 .filter(item -> id.equals(item.getId()))
                 .findFirst();
+    }
+
+    @Override
+    public void saveCategory(TransactionCategory category) {
+        var categoryEntity = new CategoryEntity();
+        categoryEntity.setId(category.getId());
+        categoryEntity.setCategory(category.getCategory());
+        categoryEntity.setLabel(category.getLabel());
+        categoryEntity.setType(category.getType().name());
+        catRepository.save(categoryEntity);
+    }
+
+    @Override
+    public void saveBankAccount(BankAccount bankAccount) {
+        var bankAccountEntity = new BankAccountEntity();
+        bankAccountEntity.setId(bankAccount.getId());
+        bankAccountEntity.setCategory(bankAccount.getCategory());
+        bankAccountEntity.setLabel(bankAccount.getLabel());
+        bkRepository.save(bankAccountEntity);
     }
 
     @Override

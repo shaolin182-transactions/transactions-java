@@ -11,5 +11,9 @@ public interface ICommonDataDatasource {
 
     Optional<BankAccount> findBankAccountById(Integer id);
 
+    void saveCategory(TransactionCategory category);
+
+    void saveBankAccount(BankAccount bankAccount);
+
     void refresh();
 }

@@ -54,6 +54,17 @@ public class CommonDataDatasource implements ICommonDataDatasource {
                 .findFirst();
     }
 
+    @Override
+    public void saveCategory(TransactionCategory category) {
+        throw new UnsupportedOperationException("Not necessary for mongoDB");
+
+    }
+
+    @Override
+    public void saveBankAccount(BankAccount bankAccount) {
+        throw new UnsupportedOperationException("Not necessary for mongoDB");
+    }
+
     /**
      * Refresh common data
      */
