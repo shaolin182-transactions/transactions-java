@@ -9,6 +9,8 @@ import org.transactions.connector.ITransactionDataSource;
 import org.transactions.connector.ITransactionsReadOnlyDatasource;
 import org.transactions.persistence.pg.converters.TransactionConverter;
 import org.transactions.persistence.pg.converters.TransactionEntityConverter;
+import org.transactions.persistence.pg.entities.BankAccountEntity;
+import org.transactions.persistence.pg.entities.CategoryEntity;
 import org.transactions.persistence.pg.entities.SubTransactionEntity;
 import org.transactions.persistence.pg.repositories.BankAccountRepository;
 import org.transactions.persistence.pg.repositories.CategoryRepository;
@@ -28,6 +30,10 @@ public class TransactionPgDatasource implements ITransactionDataSource, ITransac
     private final BankAccountRepository bkRepository;
     private final TransactionEntityConverter transactionEntityConverter;
     private final TransactionConverter transactionConverter;
+
+    private List<CategoryEntity> categories;
+
+    private List<BankAccountEntity> bankAccounts;
 
     @Autowired
     public TransactionPgDatasource(TransactionsRepository repository, CategoryRepository categoryRepository, BankAccountRepository bkRepository, TransactionEntityConverter transactionEntityConverter, TransactionConverter transactionConverter){
@@ -69,14 +75,14 @@ public class TransactionPgDatasource implements ITransactionDataSource, ITransac
         for (SubTransactionEntity details : entity.getTransactionsDetails()) {
 
             if (details.getCategory() != null){
-                var cat = categoryRepository.findById(details.getCategory().getId());
+                var cat = findCategoryById(details.getCategory().getId());
                 if (cat.isPresent()){
                     details.setCategory(cat.get());
                 }
             }
 
             if (details.getBankAccount() != null) {
-                var bk = bkRepository.findById(details.getBankAccount().getId());
+                var bk = findBankAccountById(details.getBankAccount().getId());
                 if (bk.isPresent()) {
                     details.setBankAccount(bk.get());
                 }
@@ -88,5 +94,25 @@ public class TransactionPgDatasource implements ITransactionDataSource, ITransac
             return transactionEntityConverter.convert(result);
         }
         return null;
+    }
+
+    private Optional<CategoryEntity> findCategoryById(Integer id) {
+        if (categories == null){
+            categories = StreamSupport.stream(categoryRepository.findAll().spliterator(), false).toList();
+        }
+
+        return categories.stream()
+                .filter(item -> id.equals(item.getId()))
+                .findFirst();
+    }
+
+    private Optional<BankAccountEntity> findBankAccountById(Integer id) {
+        if (bankAccounts == null){
+            bankAccounts = StreamSupport.stream(bkRepository.findAll().spliterator(), false).toList();
+        }
+
+        return bankAccounts.stream()
+                .filter(item -> id.equals(item.getId()))
+                .findFirst();
     }
 }
