@@ -5,7 +5,7 @@ import sys
 
 # Expression régulière pour valider les messages de commit selon la convention "Conventional Commits"
 COMMIT_MSG_PATTERN = re.compile(
-    r'^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test|BREAKING CHANGE)(\(([a-zA-Z0-9\-_]+)\))?: ([a-zA-Z0-9\-_ ]+)$'
+    r'^(build|chore|ci|docs|feat|fix|perf|release|refactor|revert|style|test|BREAKING CHANGE)(\(([a-zA-Z0-9\-_]+)\))?: ([a-zA-Z0-9\-_\. ]+)$'
 )
 
 def validate_commit_message(commit_msg):
