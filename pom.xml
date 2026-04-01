@@ -68,6 +68,7 @@
 
   <scm>
     <developerConnection>scm:git:https://github.com/shaolin182-transactions/transactions-java.git</developerConnection>
+    <tag>HEAD</tag>
   </scm>
 
   <dependencyManagement>
