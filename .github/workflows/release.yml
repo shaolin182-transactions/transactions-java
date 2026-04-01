@@ -1,4 +1,4 @@
-name: Maven Release Prepare
+name: Create release
 
 on:
   workflow_dispatch:
@@ -10,6 +10,12 @@ on:
         description: 'Prochaine version de développement (ex: 1.0.1-SNAPSHOT)'
         required: true
 
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+  packages: write
+
 jobs:
   prepare-release:
     runs-on: ubuntu-latest
@@ -20,11 +26,20 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+      - name: Configure Git user
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
       - name: Prepare Release
         run: |
           mvn -B release:prepare \
             -DreleaseVersion=${{ github.event.inputs.tag }} \
             -DdevelopmentVersion=${{ github.event.inputs.nextVersion }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+          
       - name: Perform Release
         run: mvn -B release:perform
         env:
