@@ -59,12 +59,18 @@ public class CommonPgDatasource implements ICommonDataDatasource {
     @Override
     public void saveCategory(TransactionCategory category) {
 
+        if (category == null){
+            return;
+        }
+
         if (findCategoryById(category.getId()).isEmpty()){
             var categoryEntity = new CategoryEntity();
             categoryEntity.setId(category.getId());
             categoryEntity.setCategory(category.getCategory());
             categoryEntity.setLabel(category.getLabel());
-            categoryEntity.setType(category.getType().name());
+            if (category.getType() != null){
+                categoryEntity.setType(category.getType().name());
+            }
             catRepository.save(categoryEntity);
 
             refresh();
