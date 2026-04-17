@@ -72,7 +72,9 @@ public class TransactionConverter {
                 categoryEntity.setId(t.getCategory().getId());
                 categoryEntity.setCategory(t.getCategory().getCategory());
                 categoryEntity.setLabel(t.getCategory().getLabel());
-                categoryEntity.setType(t.getCategory().getType().name());
+                if (t.getCategory().getType() != null){
+                    categoryEntity.setType(t.getCategory().getType().name());
+                }
                 entity.setCategory(categoryEntity);
             }
             if (t.getBankAccount() != null){
