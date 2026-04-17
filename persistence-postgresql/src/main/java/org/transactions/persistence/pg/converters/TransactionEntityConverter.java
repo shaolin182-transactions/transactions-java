@@ -52,8 +52,10 @@ public class TransactionEntityConverter {
                     builder.withCategory()
                             .withLabel(e.getCategory().getLabel())
                             .withCategory(e.getCategory().getCategory())
-                            .withType(TransactionCategoryType.valueOf(e.getCategory().getType()))
                             .withId(e.getCategory().getId()).done();
+                    if (e.getCategory().getType() != null){
+                        builder.withCategory().withType(TransactionCategoryType.valueOf(e.getCategory().getType()));
+                    }
                 }
 
                 if (e.getBankAccount() != null){
