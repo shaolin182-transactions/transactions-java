@@ -12,7 +12,7 @@ public class SubTransactionEntity {
     @Column(columnDefinition = "uuid")
     private UUID id;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private CategoryEntity category;
 
@@ -22,7 +22,7 @@ public class SubTransactionEntity {
 
     private String description;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "bank_account_id", referencedColumnName = "id")
     private BankAccountEntity bankAccount;
 

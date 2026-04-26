@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.model.transactions.BankAccount;
 import org.model.transactions.Transaction;
+import org.model.transactions.TransactionCategory;
 import org.model.transactions.builder.TransactionBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -42,6 +43,9 @@ class TransactionPgDatasourceTest {
 
     @Autowired
     private TransactionPgDatasource transactionPgDatasource;
+
+    @Autowired
+    private CommonPgDatasource commonPgDatasource;
 
     @Autowired
     private BankAccountRepository bkRepository;
@@ -84,11 +88,16 @@ class TransactionPgDatasourceTest {
         var transactions = transactionPgDatasource.getAllTransactions();
         assertEquals(0, transactions.size());
 
+        commonPgDatasource.saveBankAccount(bankAccountCMB());
+        commonPgDatasource.saveBankAccount(bankAccountPEE());
+        commonPgDatasource.saveBankAccount(bankAccountPEEModified());
+        commonPgDatasource.saveCategory(categoryA());
+
         // We save a transaction and then we check that the data is correctly saved in the database
         var savedTransaction = transactionPgDatasource.saveTransactions(transactionPEE());
         var id = savedTransaction.getId();
         assertNotNull(id);
-        assertEquals(1, bkRepository.count());
+        assertEquals(3, bkRepository.count());
         assertEquals(1, categoryRepository.count());
         assertEquals(1, subTransactionRepository.count());
         assertEquals(1, transactionsRepository.count());
@@ -98,13 +107,13 @@ class TransactionPgDatasourceTest {
         // We save another transaction with the same category but different bank account, then we check that no new category is created but a new bank account is created
         transactionPgDatasource.saveTransactions(transactionCommun());
 
-        assertEquals(2, bkRepository.count());
+        assertEquals(3, bkRepository.count());
         assertEquals(1, categoryRepository.count());
         assertEquals(3, subTransactionRepository.count());
         assertEquals(3, transactionsRepository.count());
 
         // We update the bank account of the first transaction, then we check that the bank account is updated and no new bank account is created
-        savedTransaction.getTransactions().get(0).setBankAccount(new BankAccount.BankAccountBuilder().withCategory("PEE").withId(5).withLabel("BL Label").build());
+        savedTransaction.getTransactions().get(0).setBankAccount(bankAccountPEEModified());
         transactionPgDatasource.saveTransactions(savedTransaction);
 
         assertEquals(3, bkRepository.count());
@@ -136,8 +145,8 @@ class TransactionPgDatasourceTest {
             .withCost(Long.valueOf(15456))
             .addTransactions()
                 .addTransaction()
-                    .withCategory().withLabel("Cat1").withId(4).withCategory("ACat").withType(COURANTE).done()
-                    .withBankAccount().withCategory("PEE").withId(1).withLabel("PEE_label").done()
+                    .withCategory(categoryA())
+                    .withBankAccount(bankAccountPEE())
                     .withDescription("desc").withIncome(Float.valueOf(0)).withOutcome(Float.valueOf(5.5f)).done()
             .done()
             .build();
@@ -148,12 +157,41 @@ class TransactionPgDatasourceTest {
             .withCost(Long.valueOf(15456))
             .addTransactions()
                 .addTransaction()
-                    .withCategory().withLabel("Cat1").withId(4).withCategory("ACat").withType(COURANTE).done()
-                    .withBankAccount().withCategory("Commun").withId(2).withLabel("CMB").done()
+                    .withCategory(categoryA())
+                    .withBankAccount(bankAccountCMB())
                     .withDescription("desc").withIncome(Float.valueOf(0)).withOutcome(Float.valueOf(6.5f)).done()
                 .done()
             .build();
     }
 
+    private BankAccount bankAccountCMB() {
+        return new BankAccount.BankAccountBuilder()
+            .withId(1)
+            .withCategory("Commun")
+            .withLabel("CMB")
+            .build();
+    }
+
+    private BankAccount bankAccountPEE() {
+        return new BankAccount.BankAccountBuilder()
+                .withId(2)
+                .withCategory("PEE")
+                .withLabel("PEE_label")
+                .build();
+    }
+
+    private BankAccount bankAccountPEEModified() {
+        return new BankAccount.BankAccountBuilder()
+                .withId(5)
+                .withCategory("PEE")
+                .withLabel("BL_label")
+                .build();
+    }
+
+    private TransactionCategory categoryA() {
+        return new TransactionCategory.TransactionCategoryBuilder()
+                .withLabel("Cat1").withId(4).withCategory("ACat").withType(COURANTE)
+                .build();
+    }
 
 }
