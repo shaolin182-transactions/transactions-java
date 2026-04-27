@@ -1,0 +1,12 @@
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+
+  data:
+    mongodb:
+      host: dev-transactions-mongo-db-6
+      port: 27017
+      database: transactions-dev
+      uri: mongodb://dev-transactions-mongo-db-6:27017/transactions-dev
