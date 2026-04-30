@@ -23,6 +23,57 @@
 
     <plugins>
       <plugin>
+        <groupId>org.openapitools</groupId>
+        <artifactId>openapi-generator-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>api</id>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <inputSpec>${project.basedir}/src/main/resources/openapi.yaml</inputSpec>
+              <generatorName>spring</generatorName>
+              <generateApis>true</generateApis>
+              <apiPackage>org.transactions.api.server</apiPackage>
+              <modelPackage>org.transactions.api.server.model</modelPackage>
+              <skipValidateSpec>false</skipValidateSpec>
+              <generateAliasAsModel>true</generateAliasAsModel>
+              <configOptions>
+                <useTags>true</useTags>
+                <skipDefaultInterface>true</skipDefaultInterface>
+                <artifactVersion>${project.version}</artifactVersion>
+                <hideGenerationTimestamp>true</hideGenerationTimestamp>
+                <openApiNullable>false</openApiNullable>
+                <documentationProvider>none</documentationProvider>
+                <interfaceOnly>true</interfaceOnly>
+                <useSpringBoot3>true</useSpringBoot3>
+              </configOptions>
+              <importMappings>
+                <importMapping>JsonPatch=com.github.fge.jsonpatch.JsonPatch</importMapping>
+              </importMappings>
+              <typeMappings>
+                <typeMapping>JsonPatch=com.github.fge.jsonpatch.JsonPatch</typeMapping>
+              </typeMappings>
+              <additionalProperties>removeEnumValuePrefix=false</additionalProperties>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.mapstruct</groupId>
+              <artifactId>mapstruct-processor</artifactId>
+              <version>1.6.3</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+      <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <excludes>
@@ -148,6 +199,12 @@
     <dependency>
       <groupId>com.github.java-json-tools</groupId>
       <artifactId>json-patch</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mapstruct</groupId>
+      <artifactId>mapstruct</artifactId>
+      <version>1.6.3</version>
     </dependency>
 
     <!-- For unit test-->

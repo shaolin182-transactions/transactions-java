@@ -45,7 +45,7 @@ public class TransactionDetails {
      */
     private Long costAbs;
 
-    private TransactionDetails() {
+    public TransactionDetails() {
 
     }
 
@@ -91,6 +91,18 @@ public class TransactionDetails {
 
     public void setCategory(TransactionCategory category) {
         this.category = category;
+    }
+
+    public void setIncome(Float income) {
+        this.income = income;
+    }
+
+    public void setOutcome(Float outcome) {
+        this.outcome = outcome;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
