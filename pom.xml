@@ -5,7 +5,7 @@
 
   <groupId>org.transactions</groupId>
   <artifactId>transactions-java-server</artifactId>
-  <version>1.4.5-SNAPSHOT</version>
+  <version>1.5.1-SNAPSHOT</version>
 
   <parent>
     <groupId>org.springframework.boot</groupId>
