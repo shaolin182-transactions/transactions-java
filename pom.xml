@@ -5,7 +5,7 @@
 
   <groupId>org.transactions</groupId>
   <artifactId>transactions-java-server</artifactId>
-  <version>1.4.4-SNAPSHOT</version>
+  <version>1.5.0-RC2</version>
 
   <parent>
     <groupId>org.springframework.boot</groupId>
@@ -67,7 +67,7 @@
 
   <scm>
     <developerConnection>scm:git:https://github.com/shaolin182-transactions/transactions-java.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>1.5.0-RC2</tag>
   </scm>
 
   <dependencyManagement>
