@@ -3,10 +3,10 @@ package org.transactions.api.controller;
 import com.github.fge.jsonpatch.JsonPatch;
 import io.micrometer.observation.annotation.Observed;
 import org.model.transactions.Transaction;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 import org.transactions.ITransactionService;
 import org.transactions.api.mapper.TransactionMapper;
 import org.transactions.api.server.TransactionsApi;
@@ -20,11 +20,14 @@ import java.util.stream.Collectors;
         lowCardinalityKeyValues = {"layer", "controller"})
 public class TransactionsController implements TransactionsApi {
 
-    @Autowired
-    private ITransactionService service;
+    private final ITransactionService service;
 
-    @Autowired
-    TransactionMapper mapper;
+    private final TransactionMapper mapper;
+
+    public TransactionsController(ITransactionService service, TransactionMapper mapper){
+        this.service = service;
+        this.mapper = mapper;
+    }
 
     /**
      * @return a list of all transactions found

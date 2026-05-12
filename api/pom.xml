@@ -32,7 +32,7 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <inputSpec>${project.basedir}/src/main/resources/openapi.yaml</inputSpec>
+              <inputSpec>${project.basedir}/src/main/resources/openapi_v1.0.1.yaml</inputSpec>
               <generatorName>spring</generatorName>
               <generateApis>true</generateApis>
               <apiPackage>org.transactions.api.server</apiPackage>
@@ -93,6 +93,14 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-contract-maven-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <baseClassForTests>org.transactions.utils.contract.BaseContractClass</baseClassForTests>
+        </configuration>
       </plugin>
     </plugins>
     <resources>
@@ -221,6 +229,11 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-junit-jupiter</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-contract-verifier</artifactId>
     </dependency>
     <!-- END - For unit test-->
 
