@@ -1,4 +1,4 @@
-FROM maven:3.9.2-eclipse-temurin-17-alpine AS build
+FROM maven:3.9.16-eclipse-temurin-17-alpine AS build
 RUN mkdir -p /workspace
 WORKDIR /workspace
 COPY . /workspace
