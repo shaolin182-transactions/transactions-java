@@ -11,7 +11,7 @@ org.springframework.cloud.contract.spec.Contract.make {
         // On attend un corps JSON contenant un champ 'date' au format ISO-8601 (OffsetDateTime)
         body(
             // consumer: attente côté test (regex), producer: valeur utilisée pour générer le stub
-            date: $(iso8601WithOffset()),
+            date: $(consumer(iso8601WithOffset()), producer("2026-06-01T12:00:00Z")),
             transactions: [
                 [
                     income : $(consumer(regex('-?\\d+(\\.\\d+)?')), producer(0)),

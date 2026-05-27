@@ -91,7 +91,7 @@ package contracts
                 contentType('application/json')
             }
             body(
-                    date: $(iso8601WithOffset()),
+                    date: $(consumer(iso8601WithOffset()), producer("2026-06-01T12:00:00Z")),
                     transactions: [
                             [
                                     income : $(consumer(regex('-?\\d+(\\.\\d+)?')), producer(0)),
