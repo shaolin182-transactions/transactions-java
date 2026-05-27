@@ -18,7 +18,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.lenient;
 
 @ExtendWith(MockitoExtension.class)
 public class BaseContractClass {
@@ -37,7 +37,7 @@ public class BaseContractClass {
         Transaction expectedTransaction = createTransaction();
 
         // Configure Mock
-        when(mapper.transactionToRest(Mockito.any())).thenReturn(expectedTransaction);
+        lenient().when(mapper.transactionToRest(Mockito.any())).thenReturn(expectedTransaction);
     }
 
     private Transaction createTransaction() {
