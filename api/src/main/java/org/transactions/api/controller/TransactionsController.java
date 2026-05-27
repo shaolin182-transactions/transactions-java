@@ -54,7 +54,7 @@ public class TransactionsController implements TransactionsApi {
      * Create a new transaction
      * @return transaction updated
      */
-    public ResponseEntity<org.transactions.api.server.model.Transaction> createTransaction(org.transactions.api.server.model.Transaction transaction) {
+    public ResponseEntity<org.transactions.api.server.model.Transaction> createTransaction(org.transactions.api.server.model.TransactionRequest transaction) {
         var request = mapper.transactionFromRest(transaction);
         Transaction result = service.createTransaction(request);
         var response = mapper.transactionToRest(result);
@@ -65,7 +65,7 @@ public class TransactionsController implements TransactionsApi {
      * Update transaction with id given in parameter
      * @return transaction updated
      */
-    public ResponseEntity<org.transactions.api.server.model.Transaction> updateTransaction(String id, org.transactions.api.server.model.Transaction transaction) {
+    public ResponseEntity<org.transactions.api.server.model.Transaction> updateTransaction(String id, org.transactions.api.server.model.TransactionRequest transaction) {
         var request =  mapper.transactionFromRest(transaction);
         Transaction result = service.saveTransaction(id, request);
         var response = mapper.transactionToRest(result);
