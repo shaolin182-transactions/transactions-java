@@ -10,21 +10,21 @@ package contracts
                 contentType('application/json')
             }
             body(
-                date: $(consumer(notMatching(iso8601WithOffset())), producer("invalid-date-format")),
+                date: $(consumer(regex('^(?!([0-9]{4})-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])T(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])(\\.\\d+)?(Z|[+-][01]\\d:[0-5]\\d)).+$')), producer("invalid-date-format")),
                 transactions: [
                     [
                         income : $(consumer(regex('-?\\d+(\\.\\d+)?')), producer(0)),
                         outcome: $(consumer(regex('-?\\d+(\\.\\d+)?')), producer(1276.87)),
                         category: [
                                 id: $(consumer(anInteger()), producer(11)),
-                                category: $(consumer(alphaNumeric()), producer("Maison")),
-                                label: $(consumer(alphaNumeric()), producer("Assurances")),
+                                category: $(consumer(regex('[A-Za-zÀ-ÿ \'\\-\\_\\,]+')), producer("Maison")),
+                                label: $(consumer(regex('[A-Za-zÀ-ÿ \'\\-\\_\\,]+')), producer("Assurances")),
                                 type: "FIXE"
                         ],
                         bankAccount: [
                                 id : $(consumer(anInteger()), producer(14)),
-                                category: $(consumer(alphaNumeric()), producer("Commun")),
-                                label: $(consumer(alphaNumeric()), producer("PEE")),
+                                category: $(consumer(regex('[A-Za-zÀ-ÿ \'\\-\\_\\,]+')), producer("Commun")),
+                                label: $(consumer(regex('[A-Za-zÀ-ÿ \'\\-\\_\\,]+')), producer("PEE")),
                         ],
                     ]
                 ]
@@ -49,14 +49,14 @@ package contracts
                         outcome: $(consumer(regex('-?\\d+(\\.\\d+)?')), producer(1276.87)),
                         category: [
                                 id: $(consumer(anInteger()), producer(11)),
-                                category: $(consumer(alphaNumeric()), producer("Maison")),
-                                label: $(consumer(alphaNumeric()), producer("Assurances")),
+                                category: $(consumer(regex('[A-Za-zÀ-ÿ \'\\-\\_\\,]+')), producer("Maison")),
+                                label: $(consumer(regex('[A-Za-zÀ-ÿ \'\\-\\_\\,]+')), producer("Assurances")),
                                 type: "FIXE"
                         ],
                         bankAccount: [
                                 id : $(consumer(anInteger()), producer(14)),
-                                category: $(consumer(alphaNumeric()), producer("Commun")),
-                                label: $(consumer(alphaNumeric()), producer("PEE")),
+                                category: $(consumer(regex('[A-Za-zÀ-ÿ \'\\-\\_\\,]+')), producer("Commun")),
+                                label: $(consumer(regex('[A-Za-zÀ-ÿ \'\\-\\_\\,]+')), producer("PEE")),
                         ],
                     ]
                 ]
@@ -76,6 +76,7 @@ package contracts
             }
             body(
                 date: $(iso8601WithOffset()),
+                transactions: null
             )
         }
         response {
@@ -98,14 +99,14 @@ package contracts
                                     outcome: $(consumer(regex('-?\\d+(\\.\\d+)?')), producer(1276.87)),
                                     category: [
                                             id: $(consumer(anInteger()), producer(11)),
-                                            category: $(consumer(alphaNumeric()), producer("Maison")),
-                                            label: $(consumer(alphaNumeric()), producer("Assurances")),
-                                            type: $(consumer(notMatching(regex('FIXE|COURANTE|EXTRA'))), producer("invalid-type"))
+                                            category: $(consumer(regex('[A-Za-zÀ-ÿ \'\\-\\_\\,]+')), producer("Maison")),
+                                            label: $(consumer(regex('[A-Za-zÀ-ÿ \'\\-\\_\\,]+')), producer("Assurances")),
+                                            type: $(consumer(regex('^(?!FIXE$|COURANTE$|EXTRA$).+$')), producer("invalid-type"))
                                     ],
                                     bankAccount: [
                                             id : $(consumer(anInteger()), producer(14)),
-                                            category: $(consumer(alphaNumeric()), producer("Commun")),
-                                            label: $(consumer(alphaNumeric()), producer("PEE")),
+                                            category: $(consumer(regex('[A-Za-zÀ-ÿ \'\\-\\_\\,]+')), producer("Commun")),
+                                            label: $(consumer(regex('[A-Za-zÀ-ÿ \'\\-\\_\\,]+')), producer("PEE")),
                                     ],
                             ]
                     ]
