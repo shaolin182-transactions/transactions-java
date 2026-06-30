@@ -4,6 +4,16 @@ on:
   release:
     types: [published]
 
+  push:
+    tags:
+      - '**'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+  packages: write
+
 jobs:
 
   deploy:
