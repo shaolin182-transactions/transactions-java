@@ -36,7 +36,7 @@
     <!-- Dependencies versions-->
     <json-patch.version>1.13</json-patch.version>
     <de.flapdoodle.embed.mongo.version>4.9.2</de.flapdoodle.embed.mongo.version>
-    <spring-cloud-version>2024.0.0</spring-cloud-version>
+    <spring-cloud-version>2024.0.3</spring-cloud-version>
     <testcontainers-keycloak.version>2.6.0</testcontainers-keycloak.version>
     <testcontainers-mongo.version>1.21.4</testcontainers-mongo.version>
     <expressly.version>6.0.0</expressly.version>
