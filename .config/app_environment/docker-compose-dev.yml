@@ -2,11 +2,11 @@ services:
 
   mongo6:
     container_name: dev-transactions-mongo-db-6
-    image: mongo:6.0.7
+    image: mongo:6.0.7@sha256:bf1d25bae7c2fd47cd9a89eec3db08e73ccfbef666e43f583fa6b560ca07ac5a
     ports:
       - "27018:27017"
   zipkin:
     container_name: zipkin
-    image: openzipkin/zipkin-slim:latest
+    image: openzipkin/zipkin-slim:latest@sha256:fc29b9862c14f4fc241cf0259c585e1cfd4e9b18f01ad36d86adaabb7d01815c
     ports:
       - "9411:9411"
