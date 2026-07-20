@@ -95,6 +95,7 @@ public class IntegrationTest {
         String id = given()
             .body("{\n" +
                     "\t\"date\": \"2020-05-04T22:16:37.683+01:00\",\n" +
+                    "\t\"type\": \"OUTCOME\",\n" +
                     "\t\"transactions\": [\n" +
                     "\t\t{\n" +
                     "\t\t\t\"income\" : 0,\n" +
