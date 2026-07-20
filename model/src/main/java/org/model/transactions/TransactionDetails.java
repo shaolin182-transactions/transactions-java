@@ -31,7 +31,7 @@ public class TransactionDetails {
     private Float outcome;
 
     @Size(max = 512)
-    @Pattern(regexp = "^[\\p{L}0-9_@./# &,'-+:()]*$")
+    @Pattern(regexp = "^[\\p{L}0-9_@./# &,'\\-–$?+:()]*$")
     private String description;
 
     @Valid
