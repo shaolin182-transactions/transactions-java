@@ -103,15 +103,15 @@ public class IntegrationTest {
                     "\t\t\t\"category\": {\n" +
                     "\t\t\t\t\"id\": 1,\n" +
                     "\t\t\t\t\"category\": \"Maison\",\n" +
-                    "\t\t\t\t\"label\": \"Loyer/Prêt\",\n" +
-                    "\t\t\t\t\"type\": \"FIXE\"\n" +
+                    "\t\t\t\t\"label\": \"Loyer/Prêt\"\n" +
+//                    "\t\t\t\t\"type\": \"FIXE\"\n" +
                     "\t\t\t},\n" +
                     "\t\t\t\"bankAccount\": {\n" +
                     "\t\t\t\t\"id\" : 12,\n" +
                     "\t\t\t\t\"category\": \"Commun\",\n" +
                     "\t\t\t\t\"label\": \"CMB\"\n" +
                     "\t\t\t},\n" +
-                    "\t\t\t\"description\": \"Loyer\"\n" +
+                    "\t\t\t\"description\": \"Loyer +():\"\n" +
                     "\t\t}\n" +
                     "\t]\n" +
                     "}")
