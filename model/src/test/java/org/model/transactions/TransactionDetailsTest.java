@@ -53,7 +53,7 @@ class TransactionDetailsTest {
                 .withCategory("cat").withLabel("label").withId(1).build();
 
         return Stream.of(
-                Arguments.of("A classic ' description, with some special characters like this @.", 10f, 0f, account, 0),
+                Arguments.of("(A classic ' Housing : Mortgage/Rent -& description, with some special characters like this @/+().-–$?)", 10f, 0f, account, 0),
                 Arguments.of(null, -10f, null, account, 1),
                 Arguments.of(null, null, -10f, account, 1),
                 Arguments.of(null, null, null, account, 1),
