@@ -21,6 +21,6 @@ public class TransactionCategoryValidator implements ConstraintValidator<ValidTr
         nbFieldSet += transactionCategory.getCategory() != null ? 1 : 0;
         nbFieldSet += transactionCategory.getType() != null ? 1 : 0;
 
-        return nbFieldSet <= 0 || nbFieldSet >= 3;
+        return nbFieldSet <= 0 || nbFieldSet >= 2;
     }
 }
