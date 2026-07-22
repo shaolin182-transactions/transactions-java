@@ -1,10 +1,10 @@
-FROM maven:3.9.2-eclipse-temurin-17-alpine AS build
+FROM maven:3.9.2-eclipse-temurin-21-alpine AS build
 RUN mkdir -p /workspace
 WORKDIR /workspace
 COPY . /workspace
 RUN mvn -B -f pom.xml clean package -DskipTests
 
-FROM eclipse-temurin:17-alpine
+FROM eclipse-temurin:21-alpine
 
 COPY --from=build /workspace/api/target/*.jar app.jar
 
