@@ -27,7 +27,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.model.transactions.TransactionCategoryType.EXTRA;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -118,10 +118,9 @@ class TransactionsControllerTest {
 
         when(service.getTransaction(Mockito.anyString())).thenReturn(expectedTransaction);
 
-        MvcResult result = mockMvc.perform(get("/transactions/anyId")
+       mockMvc.perform(get("/transactions/anyId")
                 .with(jwt().jwt(builder -> builder.claim("scope", new String("reader")))))
-                .andExpect(status().isOk())
-                .andReturn();
+                .andExpect(status().isOk());
 
     }
 
@@ -155,12 +154,11 @@ class TransactionsControllerTest {
 
         when(service.createTransaction(Mockito.any())).thenReturn(expectedTransaction);
 
-        MvcResult result = mockMvc.perform(post("/transactions")
+        mockMvc.perform(post("/transactions")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(transaction)
                         .with(jwt().jwt(builder -> builder.claim("scope", new String("writer")))))
-                .andExpect(status().isCreated())
-                .andReturn();
+                .andExpect(status().isCreated());
 
     }
 
@@ -179,12 +177,11 @@ class TransactionsControllerTest {
                     ]
                 }""";
 
-        MvcResult result = mockMvc.perform(post("/transactions")
+        mockMvc.perform(post("/transactions")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(transaction)
                 .with(jwt().jwt(builder -> builder.claim("scope", new String("writer")))))
-                .andExpect(status().isCreated())
-                .andReturn();
+                .andExpect(status().isCreated());
 
 
     }
@@ -203,12 +200,11 @@ class TransactionsControllerTest {
                 "]" +
                 "}";
 
-        MvcResult result = mockMvc.perform(post("/transactions")
+        mockMvc.perform(post("/transactions")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(transaction)
                 .with(jwt().jwt(builder -> builder.claim("scope", new String("writer")))))
-                .andExpect(status().isBadRequest())
-                .andReturn();
+                .andExpect(status().isBadRequest());
     }
 
     @DisplayName("Create Transaction - Correct JSON with invalid data")
@@ -225,12 +221,11 @@ class TransactionsControllerTest {
                 "]" +
                 "}";
 
-        MvcResult result = mockMvc.perform(post("/transactions")
+        mockMvc.perform(post("/transactions")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(transaction)
                 .with(jwt().jwt(builder -> builder.claim("scope", new String("writer")))))
-                .andExpect(status().isBadRequest())
-                .andReturn();
+                .andExpect(status().isBadRequest());
     }
 
     @DisplayName("Delete Transaction - Nominal Case")
@@ -257,7 +252,7 @@ class TransactionsControllerTest {
                 .with(jwt().jwt(builder -> builder.claim("scope", new String("writer")))))
                 .andExpect(status().isOk()).andReturn();
 
-        Mockito.verify(service, Mockito.times(1)).patchTransaction(any(), any());
+        verify(service, times(1)).patchTransaction(any(), any());
     }
 
     @DisplayName("Update Transaction - Nominal Case")
@@ -290,12 +285,11 @@ class TransactionsControllerTest {
 
         when(service.saveTransaction(Mockito.anyString(), Mockito.any())).thenReturn(expectedTransaction);
 
-        MvcResult result = mockMvc.perform(put("/transactions/someId")
+        mockMvc.perform(put("/transactions/someId")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(transaction)
                 .with(jwt().jwt(builder -> builder.claim("scope", new String("writer")))))
-                .andExpect(status().isOk())
-                .andReturn();
+                .andExpect(status().isOk());
 
     }
 }

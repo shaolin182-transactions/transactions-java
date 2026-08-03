@@ -34,7 +34,7 @@ public class TransactionsController implements TransactionsApi {
      */
     public ResponseEntity<List<org.transactions.api.server.model.Transaction>> getAll(){
         List<Transaction> result = service.getAllTransactions();
-        var response = result.stream().map(item -> mapper.transactionToRest(item)).collect(Collectors.toList());
+        var response = result.stream().map(mapper::transactionToRest).collect(Collectors.toList());
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

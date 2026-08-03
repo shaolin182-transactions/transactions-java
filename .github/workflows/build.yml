@@ -31,7 +31,7 @@ jobs:
     - name: Setup Maven Action
       uses: s4u/setup-maven-action@v1.20.0
       with:
-        java-version: 17
+        java-version: 21
         java-distribution: temurin
         maven-version: 3.9.2
 
