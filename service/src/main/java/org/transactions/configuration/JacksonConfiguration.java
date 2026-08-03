@@ -14,7 +14,7 @@ public class JacksonConfiguration {
     public ObjectMapper objectMapper() {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);;
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         mapper.registerModule(new JavaTimeModule());
 
         return mapper;
