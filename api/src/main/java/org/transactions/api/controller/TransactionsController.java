@@ -12,7 +12,6 @@ import org.transactions.api.mapper.TransactionMapper;
 import org.transactions.api.server.TransactionsApi;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @Observed(name = "transactions.controller",
@@ -34,7 +33,7 @@ public class TransactionsController implements TransactionsApi {
      */
     public ResponseEntity<List<org.transactions.api.server.model.Transaction>> getAll(){
         List<Transaction> result = service.getAllTransactions();
-        var response = result.stream().map(mapper::transactionToRest).collect(Collectors.toList());
+        var response = result.stream().map(mapper::transactionToRest).toList();
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
