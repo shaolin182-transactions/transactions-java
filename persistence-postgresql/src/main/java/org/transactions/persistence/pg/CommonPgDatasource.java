@@ -104,7 +104,7 @@ public class CommonPgDatasource implements ICommonDataDatasource {
 
         bankAccounts = StreamSupport.stream(bkRepository.findAll().spliterator(), false)
                 .map(entity -> new BankAccount.BankAccountBuilder().withCategory(entity.getCategory()).withId(entity.getId()).withLabel(entity.getLabel()).build())
-                .toList();;
+                .toList();
     }
 
     private static TransactionCategory buildCategory(CategoryEntity entity) {

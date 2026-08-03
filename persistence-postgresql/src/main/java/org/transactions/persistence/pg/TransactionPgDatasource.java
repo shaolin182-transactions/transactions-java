@@ -31,10 +31,6 @@ public class TransactionPgDatasource implements ITransactionDataSource, ITransac
     private final TransactionEntityConverter transactionEntityConverter;
     private final TransactionConverter transactionConverter;
 
-    private List<CategoryEntity> categories;
-
-    private List<BankAccountEntity> bankAccounts;
-
     @Autowired
     public TransactionPgDatasource(TransactionsRepository repository, CategoryRepository categoryRepository, BankAccountRepository bkRepository, TransactionEntityConverter transactionEntityConverter, TransactionConverter transactionConverter){
         this.repository = repository;
@@ -71,6 +67,10 @@ public class TransactionPgDatasource implements ITransactionDataSource, ITransac
     public Transaction saveTransactions(Transaction aTransaction) {
         var entity = transactionConverter.convert(aTransaction);
 
+        if (entity == null) {
+            return null;
+        }
+
         // For each sub transaction entity, we check that bank account and category exist
         for (SubTransactionEntity details : entity.getTransactionsDetails()) {
 
@@ -97,7 +97,7 @@ public class TransactionPgDatasource implements ITransactionDataSource, ITransac
     }
 
     private Optional<CategoryEntity> findCategoryById(Integer id) {
-        categories = StreamSupport.stream(categoryRepository.findAll().spliterator(), false).toList();
+        var categories = StreamSupport.stream(categoryRepository.findAll().spliterator(), false).toList();
 
         return categories.stream()
                 .filter(item -> id.equals(item.getId()))
@@ -105,7 +105,7 @@ public class TransactionPgDatasource implements ITransactionDataSource, ITransac
     }
 
     private Optional<BankAccountEntity> findBankAccountById(Integer id) {
-        bankAccounts = StreamSupport.stream(bkRepository.findAll().spliterator(), false).toList();
+        var bankAccounts = StreamSupport.stream(bkRepository.findAll().spliterator(), false).toList();
         return bankAccounts.stream()
                 .filter(item -> id.equals(item.getId()))
                 .findFirst();

@@ -40,6 +40,7 @@
     <spring-cloud-version>2024.0.0</spring-cloud-version>
     <testcontainers-keycloak.version>2.6.0</testcontainers-keycloak.version>
     <testcontainers-mongo.version>1.21.4</testcontainers-mongo.version>
+    <testcontainers-postgresql.version>2.0.3</testcontainers-postgresql.version>
     <expressly.version>6.0.0-M1</expressly.version>
     <!-- END dependencies versions -->
 
@@ -64,6 +65,8 @@
     <aggregate.report.dir>sonar-report/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
     <!-- END SONAR Properties -->
 
+    <testcontainers-junit-jupiter.version>21</testcontainers-junit-jupiter.version>
+    <testcontainers.version>1.21.4</testcontainers.version>
   </properties>
 
   <scm>
@@ -156,7 +159,25 @@
         <version>${testcontainers-mongo.version}</version>
         <scope>test</scope>
       </dependency>
-      <!-- End Integration test -->
+      <dependency>
+          <groupId>org.testcontainers</groupId>
+          <artifactId>testcontainers-postgresql</artifactId>
+          <version>${testcontainers-postgresql.version}</version>
+          <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>1.${testcontainers-junit-jupiter.version}.4</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers</artifactId>
+        <version>${testcontainers.version}</version>
+      </dependency>
+        <!-- End Integration test -->
     </dependencies>
   </dependencyManagement>
 

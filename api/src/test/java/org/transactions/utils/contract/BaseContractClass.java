@@ -30,7 +30,7 @@ class BaseContractClass {
     TransactionMapper mapper;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         RestAssuredMockMvc.standaloneSetup(new TransactionsController(service, mapper));
 
         // Create data
