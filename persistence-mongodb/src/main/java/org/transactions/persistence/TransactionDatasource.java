@@ -2,6 +2,7 @@ package org.transactions.persistence;
 
 import io.micrometer.observation.annotation.Observed;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.transactions.connector.ITransactionDataSource;
 import org.model.transactions.Transaction;
@@ -14,7 +15,8 @@ import java.util.Optional;
 @Observed(name = "transactions.persistence",
         contextualName = "transactions-persistence",
         lowCardinalityKeyValues = {"layer", "persistence"})
-@Component
+@Component("mongodbDatasource")
+@Profile("mongodb")
 public class TransactionDatasource implements ITransactionDataSource, ITransactionsReadOnlyDatasource{
 
     @Autowired

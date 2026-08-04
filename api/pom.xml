@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.transactions</groupId>
     <artifactId>transactions-java-server</artifactId>
-    <version>1.4.5-SNAPSHOT</version>
+    <version>1.5.1-SNAPSHOT</version>
   </parent>
   <artifactId>server</artifactId>
 
@@ -32,7 +32,7 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <inputSpec>${project.basedir}/src/main/resources/openapi.yaml</inputSpec>
+              <inputSpec>${project.basedir}/src/main/resources/openapi_v1.0.1.yaml</inputSpec>
               <generatorName>spring</generatorName>
               <generateApis>true</generateApis>
               <apiPackage>org.transactions.api.server</apiPackage>
@@ -93,6 +93,14 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-contract-maven-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <baseClassForTests>org.transactions.utils.contract.BaseContractClass</baseClassForTests>
+        </configuration>
       </plugin>
     </plugins>
     <resources>
@@ -222,11 +230,21 @@
       <groupId>org.mockito</groupId>
       <artifactId>mockito-junit-jupiter</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-contract-verifier</artifactId>
+    </dependency>
     <!-- END - For unit test-->
 
     <dependency>
       <groupId>org.transactions</groupId>
       <artifactId>persistence-mongodb</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.transactions</groupId>
+      <artifactId>persistence-postgresql</artifactId>
     </dependency>
 
     <dependency>
@@ -251,6 +269,13 @@
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers</artifactId>
       <version>1.21.4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers-postgresql</artifactId>
+      <version>2.0.3</version>
+      <scope>test</scope>
     </dependency>
 
     <dependency>

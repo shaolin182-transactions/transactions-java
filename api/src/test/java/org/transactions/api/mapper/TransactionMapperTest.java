@@ -4,14 +4,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.model.transactions.TransactionCategoryType;
-import org.model.transactions.TransactionDetails;
-import org.model.transactions.TransactionType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.transactions.api.server.model.BankAccount;
 import org.transactions.api.server.model.Category;
-import org.transactions.api.server.model.Transaction;
-import org.transactions.api.server.model.TransactionDetail;
+import org.transactions.api.server.model.TransactionRequest;
+import org.transactions.api.server.model.TransactionRequestDetail;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -39,22 +37,16 @@ class TransactionMapperTest {
         category.setLabel("label");
         category.setType(Category.TypeEnum.EXTRA);
 
-        var details = new TransactionDetail();
+        var details = new TransactionRequestDetail();
         details.setCategory(category);
         details.setDescription("description");
         details.setBankAccount(bk);
-        details.setCost(1235l);
-        details.setCostAbs(13545l);
         details.setIncome(-1235.5f);
         details.setOutcome(425.5f);
 
 
-        var restTransaction = new Transaction();
-        restTransaction.setId("someId");
-        restTransaction.setCost(12356l);
-        restTransaction.setCostAbs(12354668l);
+        var restTransaction = new TransactionRequest();
         restTransaction.setDescription("Some description");
-        restTransaction.setType(Transaction.TypeEnum.OUTCOME);
         restTransaction.setDate(OffsetDateTime.now());
         restTransaction.setTransactions(List.of(details));
 
@@ -62,16 +54,10 @@ class TransactionMapperTest {
         var resultDetails = result.getTransactions().get(0);
 
         Assertions.assertAll(
-                () -> Assertions.assertEquals(restTransaction.getId(), result.getId()),
-                () -> Assertions.assertEquals(restTransaction.getCost(), result.getCost()),
-                () -> Assertions.assertEquals(restTransaction.getCostAbs(), result.getCostAbs()),
-                () -> Assertions.assertEquals(TransactionType.OUTCOME, result.getType()),
                 () -> Assertions.assertEquals(restTransaction.getDate(), result.getDate()),
                 () -> Assertions.assertEquals(restTransaction.getDescription(), result.getDescription()),
                 () -> Assertions.assertEquals(restTransaction.getDate(), result.getDate()),
 
-                () -> Assertions.assertEquals(1235l, resultDetails.getCost()),
-                () -> Assertions.assertEquals(13545l, resultDetails.getCostAbs()),
                 () -> Assertions.assertEquals(-1235.5f, resultDetails.getIncome()),
                 () -> Assertions.assertEquals(425.5f, resultDetails.getOutcome()),
                 () -> Assertions.assertEquals("description", resultDetails.getDescription()),

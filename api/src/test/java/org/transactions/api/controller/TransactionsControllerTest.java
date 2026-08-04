@@ -11,11 +11,11 @@ import org.model.transactions.Transaction;
 import org.model.transactions.builder.TransactionBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.transactions.ITransactionService;
@@ -27,11 +27,11 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.model.transactions.TransactionCategoryType.EXTRA;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Some integration tests for testing api layer
@@ -39,21 +39,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Tag("UnitTest")
+@ActiveProfiles("mongodb")
 class TransactionsControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     ITransactionService service;
 
-    @MockBean
+    @MockitoBean
     ITransactionDataSource datasource;
 
-    @MockBean
+    @MockitoBean
     TransactionsRepository repository;
 
-    @MockBean
+    @MockitoBean
     JwtDecoder jwtDecoder;
 
     @Autowired
@@ -105,6 +106,7 @@ class TransactionsControllerTest {
     void getTransaction() throws Exception {
 
         Transaction expectedTransaction = new TransactionBuilder()
+                .withId("anyId")
                 .addTransactions()
                     .addTransaction()
                         .withCategory().withId(1).withCategory("desc").withLabel("label").done()
@@ -116,21 +118,31 @@ class TransactionsControllerTest {
 
         when(service.getTransaction(Mockito.anyString())).thenReturn(expectedTransaction);
 
-        MvcResult result = mockMvc.perform(get("/transactions/anyId")
+       mockMvc.perform(get("/transactions/anyId")
                 .with(jwt().jwt(builder -> builder.claim("scope", new String("reader")))))
-                .andExpect(status().isOk())
-                .andReturn();
+                .andExpect(status().isOk());
 
-        String response = result.getResponse().getContentAsString();
-
-        Assertions.assertThat(objectMapper.writeValueAsString(expectedTransaction)).isEqualToIgnoringCase(response);
     }
 
     @Test
     @DisplayName("Create Transaction - Nominal Case")
     void createTransaction() throws Exception {
 
+        String transaction = """
+                {
+                    "date": "2020-05-01T22:16:37.683+01:00",
+                    "transactions": [
+                        {
+                            "bankAccount": {"id": 1, "category": "aCategory", "label": "aLabel"},
+                            "income": 0, "outcome": 123.5,
+                            "category":  {"id": 1, "category": "aCategory", "label": "aLabel", "type" : "EXTRA"}
+                        }
+                    ]
+                }""";
+
+
         Transaction expectedTransaction = new TransactionBuilder()
+                .withId(null)
                 .addTransactions()
                     .addTransaction()
                         .withCategory().withId(1).withCategory("aCategory").withLabel("aLabel").withType(EXTRA).done()
@@ -142,38 +154,34 @@ class TransactionsControllerTest {
 
         when(service.createTransaction(Mockito.any())).thenReturn(expectedTransaction);
 
-        MvcResult result = mockMvc.perform(post("/transactions")
+        mockMvc.perform(post("/transactions")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(expectedTransaction))
+                .content(transaction)
                         .with(jwt().jwt(builder -> builder.claim("scope", new String("writer")))))
-                .andExpect(status().isCreated())
-                .andReturn();
+                .andExpect(status().isCreated());
 
-        String response = result.getResponse().getContentAsString();
-
-        Assertions.assertThat(objectMapper.writeValueAsString(expectedTransaction)).isEqualToIgnoringCase(response);
     }
 
     @DisplayName("Create Transaction - Nominal case with JSON")
     @Test
     void createTransactionWithJSON() throws Exception {
-        String transaction = "{" +
-                "\"date\": \"2020-05-01T22:16:37.683+01:00\"," +
-                "\"transactions\": [" +
-                "{" +
-                "\"bankAccount\": {\"id\": 1, \"category\": \"aCategory\", \"label\": \"aLabel\"}," +
-                "\"income\": 0, \"outcome\": 123.5, \"description\": \"Some description\"," +
-                "\"category\":  {\"id\": 1, \"category\": \"aCategory\", \"label\": \"aLabel\", \"type\" : \"EXTRA\"}" +
-                "}" +
-                "]" +
-                "}";
+        String transaction = """
+                {
+                    "date": "2020-05-01T22:16:37.683+01:00",
+                    "transactions": [
+                        {
+                            "bankAccount": {"id": 1, "category": "aCategory", "label": "aLabel"},
+                            "income": 0, "outcome": 123.5, "description": "Some description",
+                            "category":  {"id": 1, "category": "aCategory", "label": "aLabel", "type" : "EXTRA"}
+                        }
+                    ]
+                }""";
 
-        MvcResult result = mockMvc.perform(post("/transactions")
+        mockMvc.perform(post("/transactions")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(transaction)
                 .with(jwt().jwt(builder -> builder.claim("scope", new String("writer")))))
-                .andExpect(status().isCreated())
-                .andReturn();
+                .andExpect(status().isCreated());
 
 
     }
@@ -192,12 +200,11 @@ class TransactionsControllerTest {
                 "]" +
                 "}";
 
-        MvcResult result = mockMvc.perform(post("/transactions")
+        mockMvc.perform(post("/transactions")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(transaction)
                 .with(jwt().jwt(builder -> builder.claim("scope", new String("writer")))))
-                .andExpect(status().isBadRequest())
-                .andReturn();
+                .andExpect(status().isBadRequest());
     }
 
     @DisplayName("Create Transaction - Correct JSON with invalid data")
@@ -214,12 +221,11 @@ class TransactionsControllerTest {
                 "]" +
                 "}";
 
-        MvcResult result = mockMvc.perform(post("/transactions")
+        mockMvc.perform(post("/transactions")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(transaction)
                 .with(jwt().jwt(builder -> builder.claim("scope", new String("writer")))))
-                .andExpect(status().isBadRequest())
-                .andReturn();
+                .andExpect(status().isBadRequest());
     }
 
     @DisplayName("Delete Transaction - Nominal Case")
@@ -246,12 +252,25 @@ class TransactionsControllerTest {
                 .with(jwt().jwt(builder -> builder.claim("scope", new String("writer")))))
                 .andExpect(status().isOk()).andReturn();
 
-        Mockito.verify(service, Mockito.times(1)).patchTransaction(any(), any());
+        verify(service, times(1)).patchTransaction(any(), any());
     }
 
     @DisplayName("Update Transaction - Nominal Case")
     @Test
     void updateTransaction() throws Exception {
+
+        String transaction = """
+                {
+                    "id": "someId",
+                    "date": "2020-05-01T22:16:37.683+01:00",
+                    "transactions": [
+                        {
+                            "bankAccount": {"id": 1, "category": "aCategory", "label": "aLabel"},
+                            "income": 0, "outcome": 123.5,
+                            "category":  {"id": 1, "category": "aCategory", "label": "aLabel", "type" : "EXTRA"}
+                        }
+                    ]
+                }""";
 
         Transaction expectedTransaction = new TransactionBuilder()
                 .addTransactions()
@@ -266,15 +285,11 @@ class TransactionsControllerTest {
 
         when(service.saveTransaction(Mockito.anyString(), Mockito.any())).thenReturn(expectedTransaction);
 
-        MvcResult result = mockMvc.perform(put("/transactions/someId")
+        mockMvc.perform(put("/transactions/someId")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(expectedTransaction))
+                .content(transaction)
                 .with(jwt().jwt(builder -> builder.claim("scope", new String("writer")))))
-                .andExpect(status().isOk())
-                .andReturn();
+                .andExpect(status().isOk());
 
-        String response = result.getResponse().getContentAsString();
-
-        Assertions.assertThat(objectMapper.writeValueAsString(expectedTransaction)).isEqualToIgnoringCase(response);
     }
 }

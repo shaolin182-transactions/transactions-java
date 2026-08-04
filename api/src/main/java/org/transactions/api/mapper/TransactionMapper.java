@@ -12,7 +12,7 @@ import org.transactions.api.server.model.TransactionDetail;
 public interface TransactionMapper {
 
     // Transaction
-    Transaction transactionFromRest(org.transactions.api.server.model.Transaction transaction);
+    Transaction transactionFromRest(org.transactions.api.server.model.TransactionRequest transaction);
     org.transactions.api.server.model.Transaction transactionToRest(Transaction transaction);
 
     // Bank Account

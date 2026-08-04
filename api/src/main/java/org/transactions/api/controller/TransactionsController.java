@@ -3,16 +3,15 @@ package org.transactions.api.controller;
 import com.github.fge.jsonpatch.JsonPatch;
 import io.micrometer.observation.annotation.Observed;
 import org.model.transactions.Transaction;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 import org.transactions.ITransactionService;
 import org.transactions.api.mapper.TransactionMapper;
 import org.transactions.api.server.TransactionsApi;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @Observed(name = "transactions.controller",
@@ -20,18 +19,21 @@ import java.util.stream.Collectors;
         lowCardinalityKeyValues = {"layer", "controller"})
 public class TransactionsController implements TransactionsApi {
 
-    @Autowired
-    private ITransactionService service;
+    private final ITransactionService service;
 
-    @Autowired
-    TransactionMapper mapper;
+    private final TransactionMapper mapper;
+
+    public TransactionsController(ITransactionService service, TransactionMapper mapper){
+        this.service = service;
+        this.mapper = mapper;
+    }
 
     /**
      * @return a list of all transactions found
      */
     public ResponseEntity<List<org.transactions.api.server.model.Transaction>> getAll(){
         List<Transaction> result = service.getAllTransactions();
-        var response = result.stream().map(item -> mapper.transactionToRest(item)).collect(Collectors.toList());
+        var response = result.stream().map(mapper::transactionToRest).toList();
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -51,7 +53,7 @@ public class TransactionsController implements TransactionsApi {
      * Create a new transaction
      * @return transaction updated
      */
-    public ResponseEntity<org.transactions.api.server.model.Transaction> createTransaction(org.transactions.api.server.model.Transaction transaction) {
+    public ResponseEntity<org.transactions.api.server.model.Transaction> createTransaction(org.transactions.api.server.model.TransactionRequest transaction) {
         var request = mapper.transactionFromRest(transaction);
         Transaction result = service.createTransaction(request);
         var response = mapper.transactionToRest(result);
@@ -62,7 +64,7 @@ public class TransactionsController implements TransactionsApi {
      * Update transaction with id given in parameter
      * @return transaction updated
      */
-    public ResponseEntity<org.transactions.api.server.model.Transaction> updateTransaction(String id, org.transactions.api.server.model.Transaction transaction) {
+    public ResponseEntity<org.transactions.api.server.model.Transaction> updateTransaction(String id, org.transactions.api.server.model.TransactionRequest transaction) {
         var request =  mapper.transactionFromRest(transaction);
         Transaction result = service.saveTransaction(id, request);
         var response = mapper.transactionToRest(result);
